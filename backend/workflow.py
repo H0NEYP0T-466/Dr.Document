@@ -87,14 +87,16 @@ class DocumentationWorkflow:
         try:
             logger.info(f"🚀 Starting workflow for {repo_url}")
             
+            loop = asyncio.get_running_loop()
+
             # Step 1: Clone repository
             await self._update_status(WorkflowStatus.CLONING, 10, "Cloning repository...")
-            repo_path = self.github_client.clone_repository(repo_url)
+            repo_path = await loop.run_in_executor(None, self.github_client.clone_repository, repo_url)
             repo_name = self.github_client.extract_repo_name(repo_url)
             
             # Step 2: Get repository files
             await self._update_status(WorkflowStatus.ANALYZING, 20, "Discovering files...")
-            files = self.github_client.get_repository_files(repo_path)
+            files = await loop.run_in_executor(None, self.github_client.get_repository_files, repo_path)
             
             if not files:
                 raise ValueError("No supported files found in repository")
@@ -108,10 +110,10 @@ class DocumentationWorkflow:
             
             # Step 4: Extract requirements (Agent 2)
             await self._update_status(WorkflowStatus.EXTRACTING, 45, "Extracting requirements...")
-            requirements = self.requirements_extractor.run({
-                'analyses': code_analyses,
-                'repo_name': repo_name
-            })
+            requirements = await loop.run_in_executor(
+                None, self.requirements_extractor.run,
+                {'analyses': code_analyses, 'repo_name': repo_name}
+            )
             
             # Save requirements
             self._save_intermediate("requirements.json", requirements)
@@ -128,11 +130,10 @@ class DocumentationWorkflow:
                     f"Manager review (attempt {retry_count + 1})..."
                 )
                 
-                manager_review = self.manager.run({
-                    'code_analyses': code_analyses,
-                    'requirements': requirements,
-                    'repo_name': repo_name
-                })
+                manager_review = await loop.run_in_executor(
+                    None, self.manager.run,
+                    {'code_analyses': code_analyses, 'requirements': requirements, 'repo_name': repo_name}
+                )
                 
                 self._save_intermediate(f"manager_review_{retry_count}.json", manager_review)
                 
@@ -150,12 +151,15 @@ class DocumentationWorkflow:
             
             # Step 6: Generate README (Agent 4)
             await self._update_status(WorkflowStatus.WRITING, 70, "Writing README...")
-            readme_result = self.readme_writer.run({
-                'repo_name': repo_name,
-                'code_analyses': code_analyses,
-                'requirements': requirements,
-                'manager_feedback': manager_review.get('feedback', '')
-            })
+            readme_result = await loop.run_in_executor(
+                None, self.readme_writer.run,
+                {
+                    'repo_name': repo_name,
+                    'code_analyses': code_analyses,
+                    'requirements': requirements,
+                    'manager_feedback': manager_review.get('feedback', '')
+                }
+            )
             
             readme_content = readme_result['readme_content']
             
@@ -164,12 +168,15 @@ class DocumentationWorkflow:
             
             # Step 7: Final review (Agent 5)
             await self._update_status(WorkflowStatus.FINAL_REVIEW, 85, "Final review...")
-            final_review = self.final_reviewer.run({
-                'readme_content': readme_content,
-                'code_analyses': code_analyses,
-                'requirements': requirements,
-                'repo_name': repo_name
-            })
+            final_review = await loop.run_in_executor(
+                None, self.final_reviewer.run,
+                {
+                    'readme_content': readme_content,
+                    'code_analyses': code_analyses,
+                    'requirements': requirements,
+                    'repo_name': repo_name
+                }
+            )
             
             self._save_intermediate("final_review.json", final_review)
             
@@ -227,6 +234,8 @@ class DocumentationWorkflow:
         if len(files) > max_files:
             logger.info(f"Limiting analysis to {max_files} most relevant files out of {total}")
         
+        loop = asyncio.get_running_loop()
+        
         for idx, file_info in enumerate(files_to_analyze):
             try:
                 # Update progress
@@ -238,15 +247,20 @@ class DocumentationWorkflow:
                 )
                 
                 # Read file content
-                content = self.github_client.read_file_content(file_info['path'])
+                content = await loop.run_in_executor(
+                    None, self.github_client.read_file_content, file_info['path']
+                )
                 
                 if content:
                     # Analyze with Agent 1
-                    analysis = self.code_reader.run({
-                        'file_path': file_info['relative_path'],
-                        'file_content': content,
-                        'language': file_info['extension']
-                    })
+                    analysis = await loop.run_in_executor(
+                        None, self.code_reader.run,
+                        {
+                            'file_path': file_info['relative_path'],
+                            'file_content': content,
+                            'language': file_info['extension']
+                        }
+                    )
                     
                     analyses.append(analysis)
                 

@@ -1,5 +1,6 @@
 """GitHub repository client for Dr. Document"""
 import os
+import stat
 import tempfile
 import shutil
 from typing import List, Dict, Any, Optional
@@ -7,6 +8,15 @@ from git import Repo
 from pathlib import Path
 from backend.config import settings
 from backend.logger import logger
+
+
+def _handle_remove_readonly(func, path, exc_info):
+    """Error handler for shutil.rmtree to handle read-only files on Windows."""
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception as e:
+        logger.warning(f"Failed to remove read-only file {path}: {e}")
 
 
 class GitHubClient:
@@ -172,7 +182,7 @@ class GitHubClient:
         if self.temp_dir and os.path.exists(self.temp_dir):
             try:
                 logger.info(f"Cleaning up temporary directory: {self.temp_dir}")
-                shutil.rmtree(self.temp_dir)
+                shutil.rmtree(self.temp_dir, onerror=_handle_remove_readonly)
                 logger.success("Cleanup completed")
             except Exception as e:
                 logger.error(f"Failed to cleanup: {str(e)}")
