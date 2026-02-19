@@ -1,0 +1,125 @@
+.agent-workspace {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.workspace-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.workspace-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.workspace-subtitle {
+  font-size: 1.1rem;
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+.overall-progress {
+  max-width: 600px;
+  margin: 2rem auto 0;
+  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+  border: 2px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.progress-percentage {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.progress-bar-large {
+  height: 16px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill-large {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.5s ease;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill-large::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+.status-message {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-align: center;
+  font-style: italic;
+}
+
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .agent-workspace {
+    padding: 1rem;
+  }
+
+  .workspace-header h2 {
+    font-size: 2rem;
+  }
+
+  .agents-grid {
+    grid-template-columns: 1fr;
+  }
+}
