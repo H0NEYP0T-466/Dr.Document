@@ -1,0 +1,168 @@
+.agent-card {
+  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+  border: 2px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.agent-card.working::before {
+  opacity: 1;
+  animation: shimmer 2s infinite;
+}
+
+.agent-card.completed {
+  border-color: #10b981;
+}
+
+.agent-card.failed {
+  border-color: #ef4444;
+}
+
+.agent-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.agent-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.agent-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.agent-info {
+  flex: 1;
+}
+
+.agent-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+}
+
+.agent-description {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.agent-status {
+  margin-bottom: 1rem;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+}
+
+.status-icon {
+  font-size: 1rem;
+}
+
+.status-text {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.agent-progress {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+}
+
+.agent-result {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.result-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.result-content {
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.5;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .agent-card {
+    padding: 1rem;
+  }
+
+  .agent-emoji {
+    font-size: 2rem;
+  }
+
+  .agent-name {
+    font-size: 1rem;
+  }
+
+  .agent-description {
+    font-size: 0.85rem;
+  }
+}
