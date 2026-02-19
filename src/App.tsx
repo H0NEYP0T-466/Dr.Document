@@ -3,14 +3,15 @@ import './App.css'
 import RepoInput from './components/RepoInput'
 import AgentWorkspace from './components/AgentWorkspace'
 import ResultDisplay from './components/ResultDisplay'
-import { apiClient, StatusUpdate, ResultResponse } from './api/client'
-import { Agent, AGENT_DEFINITIONS } from './types'
+import { apiClient } from './api/client'
+import type { StatusUpdate, ResultResponse } from './api/client'
+import { AGENT_DEFINITIONS } from './types'
+import type { Agent } from './types'
 
 type AppState = 'input' | 'processing' | 'completed' | 'error';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('input')
-  const [jobId, setJobId] = useState<string | null>(null)
   const [agents, setAgents] = useState<Agent[]>([])
   const [overallProgress, setOverallProgress] = useState(0)
   const [statusMessage, setStatusMessage] = useState('')
@@ -37,7 +38,7 @@ function App() {
     }
   }, [ws])
 
-  const updateAgentStatus = (status: string, progress: number, message: string) => {
+  const updateAgentStatus = (status: string, progress: number) => {
     // Map status to agents
     const statusToAgentMap: { [key: string]: number } = {
       'cloning': -1,
@@ -71,7 +72,6 @@ function App() {
 
       // Start the job
       const response = await apiClient.processRepository(repoUrl)
-      setJobId(response.job_id)
 
       // Connect to WebSocket for real-time updates
       const websocket = apiClient.connectWebSocket(
@@ -79,7 +79,7 @@ function App() {
         (update: StatusUpdate) => {
           setOverallProgress(update.progress)
           setStatusMessage(update.message)
-          updateAgentStatus(update.status, update.progress, update.message)
+          updateAgentStatus(update.status, update.progress)
 
           // If completed, fetch the result
           if (update.status === 'completed') {
@@ -130,7 +130,6 @@ function App() {
       ws.close()
     }
     setAppState('input')
-    setJobId(null)
     setResult(null)
     setError(null)
     setOverallProgress(0)

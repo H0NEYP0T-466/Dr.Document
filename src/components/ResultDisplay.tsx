@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { ResultResponse } from '../api/client';
+import type { ResultResponse } from '../api/client';
 import './ResultDisplay.css';
 
 interface ResultDisplayProps {
