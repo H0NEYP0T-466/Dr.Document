@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     
     # Application Settings
     max_file_size: int = 1024 * 1024 * 10  # 10MB
-    max_files_to_analyze: int = 30  # Maximum files to analyze per repository
+    max_files_to_analyze: int = 90  # Maximum files to analyze per repository
     allowed_file_extensions: list = [
         ".py", ".js", ".ts", ".tsx", ".jsx", ".java", ".cpp", ".c", ".h",
         ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".scala",
@@ -33,9 +33,9 @@ class Settings(BaseSettings):
     ]
     
     # LLM Configuration
-    max_tokens_lite: int = 2000
-    max_tokens_chat: int = 4000
-    max_tokens_thinking: int = 8000
+    max_tokens_lite: int = 8192
+    max_tokens_chat: int = 8192
+    max_tokens_thinking: int = 8192
     
     class Config:
         env_file = ".env"

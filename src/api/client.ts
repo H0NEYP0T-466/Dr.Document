@@ -2,7 +2,7 @@
  * API client for Dr. Document backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8004';
 
 export interface ProcessRepoRequest {
   repo_url: string;
