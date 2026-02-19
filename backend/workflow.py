@@ -221,7 +221,7 @@ class DocumentationWorkflow:
         total = len(files)
         
         # Limit files to analyze (for efficiency)
-        max_files = 30
+        max_files = settings.max_files_to_analyze
         files_to_analyze = files[:max_files]
         
         if len(files) > max_files:

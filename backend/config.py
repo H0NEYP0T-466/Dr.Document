@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     
     # Application Settings
     max_file_size: int = 1024 * 1024 * 10  # 10MB
+    max_files_to_analyze: int = 30  # Maximum files to analyze per repository
     allowed_file_extensions: list = [
         ".py", ".js", ".ts", ".tsx", ".jsx", ".java", ".cpp", ".c", ".h",
         ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".scala",
