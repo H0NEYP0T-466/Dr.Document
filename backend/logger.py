@@ -1,4 +1,5 @@
 """Comprehensive color-coded logging system for Dr. Document"""
+import io
 import logging
 import sys
 from datetime import datetime
@@ -71,15 +72,29 @@ class DrDocumentLogger:
         # Remove existing handlers
         self.logger.handlers = []
         
-        # Console handler with color
-        console_handler = logging.StreamHandler(sys.stdout)
+        # Console handler with color – use UTF-8 so emoji don't cause
+        # UnicodeEncodeError on Windows consoles whose default codec (e.g.
+        # cp1252) cannot encode multi-byte characters.
+        # line_buffering=True ensures each log line is flushed immediately.
+        # We intentionally do NOT close the wrapper on exit so that
+        # sys.stdout.buffer is not closed underneath the interpreter.
+        try:
+            _stream = io.TextIOWrapper(
+                sys.stdout.buffer, encoding='utf-8', errors='replace',
+                line_buffering=True
+            )
+        except AttributeError:
+            # Fallback for environments where sys.stdout has no .buffer
+            # attribute (e.g. StringIO-based stdout in tests or some IDEs).
+            _stream = sys.stdout
+        console_handler = logging.StreamHandler(_stream)
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(ColoredFormatter())
         self.logger.addHandler(console_handler)
         
         # File handler without color
         try:
-            file_handler = logging.FileHandler('backend/dr_document.log', mode='a')
+            file_handler = logging.FileHandler('backend/dr_document.log', mode='a', encoding='utf-8')
             file_handler.setLevel(logging.DEBUG)
             file_handler.setFormatter(
                 logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
