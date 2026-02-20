@@ -11,6 +11,13 @@ BADGE_HEADINGS = {
     "prerequisites",
 }
 
+# Headings that must keep code examples brief and minimal
+MINIMAL_CODE_HEADINGS = {
+    "quick start",
+    "development",
+    "deployment",
+}
+
 
 class SectionWriterAgent(BaseAgent):
     """
@@ -70,6 +77,16 @@ class SectionWriterAgent(BaseAgent):
                 'PostgreSQL=4169E1, TypeScript=3178C6, Node.js=339933).'
             )
 
+        # Minimal-code instruction for quickstart / development / deployment
+        minimal_code_instruction = ''
+        if heading.lower() in MINIMAL_CODE_HEADINGS:
+            minimal_code_instruction = (
+                '\n\nIMPORTANT: Keep code examples minimal. '
+                'Show only the essential commands needed to get started. '
+                'Do NOT include exhaustive configuration files, long scripts, or '
+                'step-by-step code blocks. Use short, focused snippets only.'
+            )
+
         prompt = (
             f'You are writing the **{heading}** section for the README of the '
             f'repository "{repo_name}".\n\n'
@@ -82,6 +99,7 @@ class SectionWriterAgent(BaseAgent):
             f'Use proper Markdown formatting with emojis where appropriate.\n'
             f'Do NOT include any other sections — only "{heading}".'
             f'{badge_instruction}'
+            f'{minimal_code_instruction}'
             f'{improvement_block}'
         )
 

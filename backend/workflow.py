@@ -207,7 +207,7 @@ class DocumentationWorkflow:
             # Steps 5–7: Section writing + manager review loop
             # Up to 3 full cycles driven by the Final Reviewer
             # ----------------------------------------------------------------
-            max_full_cycles = 3
+            max_full_cycles = 1
             final_readme = ''
             final_review_result: Dict = {}
             improvement_details = ''
@@ -518,7 +518,39 @@ class DocumentationWorkflow:
     def _combine_sections(self, repo_name: str, sections: List[Dict[str, str]]) -> str:
         """Combine all approved sections into a single README string."""
         parts = [f"# {repo_name}\n"]
+        seen_headings: set = set()
         for section in sections:
+            heading_key = section['heading'].lower()
+            if heading_key in seen_headings:
+                continue
+            seen_headings.add(heading_key)
             parts.append(section['content'])
             parts.append('')  # blank line between sections
+
+        # Build "Made with ❤️" footer with dependency badges
+        username = repo_name.split('/')[0] if '/' in repo_name else repo_name
+        badge_html = self._extract_dep_badges(sections)
+        parts.append('---')
+        parts.append('')
+        if badge_html:
+            parts.append(f'<p align="center">{badge_html}</p>')
+            parts.append('')
+        parts.append(
+            f'<p align="center">Made with ❤️ by '
+            f'<a href="https://github.com/{username}">{username}</a></p>'
+        )
         return '\n'.join(parts)
+
+    def _extract_dep_badges(self, sections: List[Dict[str, str]]) -> str:
+        """Extract shields.io badge <img> tags from tech-stack / dependency sections."""
+        badge_sections = {'tech stack', 'dependencies & packages', 'prerequisites'}
+        badges: List[str] = []
+        seen: set = set()
+        for section in sections:
+            if section['heading'].lower() in badge_sections:
+                imgs = re.findall(r'<img\s[^>]*shields\.io[^>]*>', section['content'])
+                for img in imgs:
+                    if img not in seen:
+                        seen.add(img)
+                        badges.append(img)
+        return ' '.join(badges)
