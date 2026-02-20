@@ -27,10 +27,7 @@ export interface ResultResponse {
   repo_url: string;
   readme: string;
   files_analyzed: number;
-  manager_review: {
-    approved: boolean;
-    quality_score: number;
-  };
+  headings: string[];
   final_review: {
     approved: boolean;
     completeness_score: number;
