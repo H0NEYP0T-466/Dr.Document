@@ -49,17 +49,51 @@ class ReadmeWriterAgent(BaseAgent):
 Create a complete README with the following sections:
 
 1. PROJECT TITLE with emoji
-2. DESCRIPTION - Clear, engaging overview
-3. FEATURES - Key capabilities and highlights
-4. TECHNICAL STACK - Technologies used
-5. ARCHITECTURE - System design and patterns
-6. INSTALLATION - Setup instructions
-7. USAGE - How to use the project
-8. API DOCUMENTATION (if applicable)
-9. CONFIGURATION - Environment variables and settings
-10. CONTRIBUTING - Guidelines for contributors
-11. LICENSE - License information
-12. ACKNOWLEDGMENTS - Credits and thanks
+2. BADGES SECTION - Include GitHub badges using shields.io right after the title. Use this exact format (replace OWNER/REPO with the actual repo name):
+
+<p>
+  <img src="https://img.shields.io/github/license/OWNER/REPO?style=for-the-badge&color=blue" alt="GitHub License">
+  <img src="https://img.shields.io/github/stars/OWNER/REPO?style=for-the-badge&color=yellow" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/forks/OWNER/REPO?style=for-the-badge&color=green" alt="GitHub Forks">
+  <img src="https://img.shields.io/github/issues/OWNER/REPO?style=for-the-badge&color=red" alt="GitHub Issues">
+  <img src="https://img.shields.io/github/issues-pr/OWNER/REPO?style=for-the-badge&color=orange" alt="GitHub Pull Requests">
+</p>
+
+<p>
+  <img src="https://img.shields.io/github/last-commit/OWNER/REPO?style=for-the-badge&color=purple" alt="Last Commit">
+  <img src="https://img.shields.io/github/commit-activity/m/OWNER/REPO?style=for-the-badge&color=brightgreen" alt="Commit Activity">
+  <img src="https://img.shields.io/github/languages/top/OWNER/REPO?style=for-the-badge&color=blueviolet" alt="Top Language">
+  <img src="https://img.shields.io/github/languages/count/OWNER/REPO?style=for-the-badge&color=ff69b4" alt="Language Count">
+</p>
+
+<p>
+  <img src="https://img.shields.io/github/repo-size/OWNER/REPO?style=for-the-badge&color=important" alt="Repo Size">
+  <img src="https://img.shields.io/github/contributors/OWNER/REPO?style=for-the-badge&color=success" alt="Contributors">
+  <img src="https://img.shields.io/github/watchers/OWNER/REPO?style=for-the-badge&color=informational" alt="Watchers">
+  <img src="https://img.shields.io/github/downloads/OWNER/REPO/total?style=for-the-badge&color=blue" alt="Downloads">
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/code%20style-standard-brightgreen?style=for-the-badge" alt="Code Style">
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome">
+  <img src="https://img.shields.io/badge/maintained-yes-green.svg?style=for-the-badge" alt="Maintained">
+  <img src="https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red.svg?style=for-the-badge" alt="Open Source">
+</p>
+
+3. DESCRIPTION - Clear, engaging overview
+4. FEATURES - Key capabilities and highlights
+5. TECH STACK BADGES - Use shields.io badges for all technologies. Format each technology as a badge:
+   <img src="https://img.shields.io/badge/TECHNOLOGY_NAME-COLOR?style=for-the-badge&logo=LOGO_NAME&logoColor=white">
+   Use appropriate colors and logos from simpleicons.org (e.g., Python=3776AB, React=61DAFB, FastAPI=009688, Docker=2496ED, PostgreSQL=4169E1, TypeScript=3178C6, JavaScript=F7DF1E, Node.js=339933, etc.)
+   Group them in <p> tags.
+6. ARCHITECTURE - System design and patterns
+7. INSTALLATION - Setup instructions
+8. USAGE - How to use the project
+9. API DOCUMENTATION (if applicable)
+10. CONFIGURATION - Environment variables and settings
+11. CONTRIBUTING - Guidelines for contributors
+12. LICENSE - License information
+13. ACKNOWLEDGMENTS - Credits and thanks
 
 Requirements:
 - Use proper Markdown formatting
@@ -68,6 +102,8 @@ Requirements:
 - Include code examples where relevant
 - Make it comprehensive and detailed
 - Use tables, lists, and formatting for readability
+- ALWAYS include the shields.io badges section right after the title
+- ALWAYS render the tech stack as badges instead of plain text
 
 Generate a README that will make developers excited to use this project!"""
         

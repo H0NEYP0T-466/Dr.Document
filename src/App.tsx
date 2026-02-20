@@ -41,7 +41,7 @@ function App() {
   const updateAgentStatus = (status: string, progress: number) => {
     // Map status to agents
     const statusToAgentMap: { [key: string]: number } = {
-      'cloning': -1,
+      'cloning': 0,
       'analyzing': 0,
       'extracting_requirements': 1,
       'manager_review': 2,

@@ -46,7 +46,7 @@ class RequirementsExtractorAgent(BaseAgent):
         prompt = f"""Based on the following code analyses for repository '{repo_name}', extract comprehensive requirements.
 
 Combined Code Analysis:
-{combined_analysis[:4000]}  # Limit to 4000 chars
+{combined_analysis[:4000]}
 
 Please extract and categorize:
 
@@ -135,10 +135,10 @@ Format each section clearly with bullet points."""
                 
                 # Extract bullet points or numbered items
                 line = line.strip()
-                if line and (line.startswith('-') or line.startswith('•') or 
+                if line and (line.startswith('-') or line.startswith('•') or line.startswith('*') or
                            (line[0].isdigit() and '.' in line[:3])):
                     # Remove bullet/number prefix
-                    item = line.lstrip('-•0123456789. ')
+                    item = line.lstrip('-•*0123456789. ')
                     if item:
                         items.append(item)
         
