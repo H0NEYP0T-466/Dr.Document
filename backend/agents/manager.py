@@ -97,15 +97,18 @@ class ManagerAgent(BaseAgent):
     def _extract_approval(self, review: str) -> bool:
         """Extract approval decision from review text."""
         upper = review.upper()
-        # Explicit APPROVE without REJECT nearby
-        if 'APPROVE' in upper and 'REJECT' not in upper:
-            return True
-        if 'APPROVED' in upper:
+        # Use word-boundary matching to avoid "REJECTION" triggering REJECT
+        has_reject = bool(re.search(r'\bREJECT\b', upper))
+        has_approve = bool(re.search(r'\bAPPROVED?\b', upper))
+        # Explicit APPROVE without standalone REJECT
+        if has_approve and not has_reject:
             return True
         # Check decision / approval lines
         for line in upper.split('\n'):
             if 'DECISION' in line or 'APPROVAL' in line:
-                if 'APPROVE' in line and 'REJECT' not in line:
+                line_has_reject = bool(re.search(r'\bREJECT\b', line))
+                line_has_approve = bool(re.search(r'\bAPPROVED?\b', line))
+                if line_has_approve and not line_has_reject:
                     return True
         return False
 

@@ -99,12 +99,14 @@ class HeadingsSelectorAgent(BaseAgent):
 
         raw = self._call_llm(messages, max_tokens=512, temperature=0.3)
 
-        # Parse headings — one per line, strip whitespace / bullet chars
+        # Parse headings — one per line, strip whitespace / bullet chars; deduplicate
         headings: List[str] = []
+        seen: set = set()
         for line in raw.strip().split('\n'):
             heading = line.strip().lstrip('-•* 0123456789.')
-            if heading:
+            if heading and heading.lower() not in seen:
                 headings.append(heading)
+                seen.add(heading.lower())
 
         headings_txt = '\n'.join(headings)
 

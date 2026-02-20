@@ -121,16 +121,15 @@ class FinalReviewerAgent(BaseAgent):
         # Check VERDICT section first
         if 'VERDICT' in upper:
             verdict_part = upper.split('VERDICT')[1][:300]
-            if 'APPROVE' in verdict_part and 'REJECT' not in verdict_part:
+            verdict_reject = bool(re.search(r'\bREJECT\b', verdict_part))
+            verdict_approve = bool(re.search(r'\bAPPROVED?\b', verdict_part))
+            if verdict_approve and not verdict_reject:
                 return True
-            if 'REJECT' in verdict_part:
+            if verdict_reject:
                 return False
 
-        approval_kw = ['APPROVED', 'APPROVE']
-        rejection_kw = ['REJECT', 'DECLINED', 'DENIED']
-
-        has_approval = any(k in upper for k in approval_kw)
-        has_rejection = any(k in upper for k in rejection_kw)
+        has_approval = bool(re.search(r'\bAPPROVED?\b', upper))
+        has_rejection = bool(re.search(r'\bREJECT\b', upper))
 
         if has_approval and not has_rejection:
             return True
