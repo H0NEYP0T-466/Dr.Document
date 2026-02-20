@@ -119,7 +119,7 @@ Generate a README that will make developers excited to use this project!"""
         ]
         
         # Call LLM to generate README
-        readme_content = self._call_llm(messages, max_tokens=4000)
+        readme_content = self._call_llm(messages, max_tokens=8192)
         
         # Process the generated README
         result = {

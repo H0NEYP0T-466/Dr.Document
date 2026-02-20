@@ -1,2 +1,2 @@
 venv\Scripts\activate
-uvicorn main:app --reload --port 8004
+uvicorn backend.main:app --reload --port 8004 --app-dir ..

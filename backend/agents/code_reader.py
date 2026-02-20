@@ -81,7 +81,7 @@ Format your response as a structured analysis."""
         ]
         
         # Call LLM
-        analysis_result = self._call_llm(messages, max_tokens=2000)
+        analysis_result = self._call_llm(messages, max_tokens=8192)
         
         # Parse the analysis (simplified extraction)
         result = {

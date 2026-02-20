@@ -86,7 +86,7 @@ Be constructive and specific in your feedback."""
         ]
         
         # Call LLM for review
-        review_result = self._call_llm(messages, max_tokens=3000)
+        review_result = self._call_llm(messages, max_tokens=8192)
         
         # Parse the review
         result = {

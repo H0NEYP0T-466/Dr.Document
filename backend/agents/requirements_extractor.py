@@ -86,7 +86,7 @@ Format each section clearly with bullet points."""
         ]
         
         # Call LLM
-        requirements_text = self._call_llm(messages, max_tokens=2000)
+        requirements_text = self._call_llm(messages, max_tokens=8192)
         
         # Parse the requirements
         result = {

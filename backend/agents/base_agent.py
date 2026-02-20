@@ -31,7 +31,7 @@ class BaseAgent(ABC):
     def _call_llm(
         self,
         messages: list,
-        max_tokens: int = None,
+        max_tokens: int = 8192,
         temperature: float = 0.7
     ) -> str:
         """Call LLM and log the interaction"""

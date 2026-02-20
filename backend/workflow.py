@@ -119,7 +119,7 @@ class DocumentationWorkflow:
             self._save_intermediate("requirements.json", requirements)
             
             # Step 5: Manager review (Agent 3) with retry logic
-            max_retries = 2
+            max_retries = 3
             retry_count = 0
             manager_approved = False
             
