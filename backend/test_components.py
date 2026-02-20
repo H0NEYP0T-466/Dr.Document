@@ -24,20 +24,20 @@ def test_imports():
         from backend.agents.base_agent import BaseAgent
         print("✓ Base agent imported")
         
-        from backend.agents.code_reader import CodeReaderAgent
-        print("✓ Code reader agent imported")
+        from backend.agents.codebase_summarizer import CodebaseSummarizerAgent
+        print("✓ Codebase Summarizer agent imported")
         
-        from backend.agents.requirements_extractor import RequirementsExtractorAgent
-        print("✓ Requirements extractor agent imported")
+        from backend.agents.headings_selector import HeadingsSelectorAgent
+        print("✓ Headings Selector agent imported")
+        
+        from backend.agents.section_writer import SectionWriterAgent
+        print("✓ Section Writer agent imported")
         
         from backend.agents.manager import ManagerAgent
         print("✓ Manager agent imported")
         
-        from backend.agents.readme_writer import ReadmeWriterAgent
-        print("✓ README writer agent imported")
-        
         from backend.agents.final_reviewer import FinalReviewerAgent
-        print("✓ Final reviewer agent imported")
+        print("✓ Final Reviewer agent imported")
         
         from backend.workflow import DocumentationWorkflow
         print("✓ Workflow imported")
@@ -77,17 +77,52 @@ def test_config():
         from backend.config import settings
         
         assert settings.model_flash_lite == "LongCat-Flash-Lite"
-        assert settings.model_flash_chat == "LongCat-Flash-Chat"
-        assert settings.max_files_to_analyze == 30
+        assert settings.model_flash_thinking == "LongCat-Flash-Thinking"
+        assert settings.max_files_to_analyze == 90
         
         print(f"✓ Config loaded:")
         print(f"  - Flash Lite model: {settings.model_flash_lite}")
-        print(f"  - Flash Chat model: {settings.model_flash_chat}")
+        print(f"  - Flash Thinking model: {settings.model_flash_thinking}")
         print(f"  - Max files to analyze: {settings.max_files_to_analyze}")
         
         return True
     except Exception as e:
         print(f"✗ Config test failed: {e}")
+        return False
+
+
+def test_agent_init():
+    """Test that agents can be instantiated (without API calls)"""
+    print("\nTesting agent instantiation (mock API key)...")
+    
+    try:
+        # Temporarily set a dummy API key so OpenAI client doesn't raise
+        import os
+        os.environ.setdefault("LONGCAT_API_KEY", "test-key")
+        
+        from backend.agents.codebase_summarizer import CodebaseSummarizerAgent
+        a1 = CodebaseSummarizerAgent()
+        print(f"✓ CodebaseSummarizerAgent: {a1.agent_name}, model={a1.model}")
+        
+        from backend.agents.headings_selector import HeadingsSelectorAgent
+        a2 = HeadingsSelectorAgent()
+        print(f"✓ HeadingsSelectorAgent: {a2.agent_name}, model={a2.model}")
+        
+        from backend.agents.section_writer import SectionWriterAgent
+        a3 = SectionWriterAgent("Features")
+        print(f"✓ SectionWriterAgent: {a3.agent_name}, model={a3.model}")
+        
+        from backend.agents.manager import ManagerAgent
+        a4 = ManagerAgent()
+        print(f"✓ ManagerAgent: {a4.agent_name}, model={a4.model}")
+        
+        from backend.agents.final_reviewer import FinalReviewerAgent
+        a5 = FinalReviewerAgent()
+        print(f"✓ FinalReviewerAgent: {a5.agent_name}, model={a5.model}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Agent instantiation failed: {e}")
         return False
 
 
@@ -101,6 +136,7 @@ if __name__ == "__main__":
     results.append(("Imports", test_imports()))
     results.append(("Logger", test_logger()))
     results.append(("Config", test_config()))
+    results.append(("Agent Init", test_agent_init()))
     
     print("\n" + "=" * 60)
     print("Test Results:")
@@ -119,3 +155,4 @@ if __name__ == "__main__":
     else:
         print("✗ Some tests failed!")
         sys.exit(1)
+

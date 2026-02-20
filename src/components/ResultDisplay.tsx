@@ -56,8 +56,8 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
           <div className="stat-label">Files Analyzed</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">{result.manager_review.quality_score}/100</div>
-          <div className="stat-label">Quality Score</div>
+          <div className="stat-value">{result.headings?.length ?? '—'}</div>
+          <div className="stat-label">Sections Written</div>
         </div>
         <div className="stat-card">
           <div className="stat-value">{result.final_review.completeness_score}/100</div>
