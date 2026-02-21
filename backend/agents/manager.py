@@ -57,6 +57,12 @@ class ManagerAgent(BaseAgent):
             f'3. FEEDBACK: What is good about this section?\n'
             f'4. IMPROVEMENT NOTES (only if rejecting): Specific, actionable improvements needed. '
             f'Be very precise about what is missing, wrong, or needs to change.\n\n'
+            f'IMPORTANT: Also check for markdown formatting issues and reject if any of the '
+            f'following are present:\n'
+            f'- The section content is wrapped in a markdown code fence (e.g. ```markdown ... ```)\n'
+            f'- Unclosed code blocks (missing closing ```)\n'
+            f'- Missing blank lines before or after headings and code blocks\n'
+            f'- Incorrect heading levels (e.g. using # instead of ## for a section heading)\n'
         )
 
         messages = [
