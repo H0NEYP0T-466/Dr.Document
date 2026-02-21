@@ -79,10 +79,19 @@ class GitHubClient:
             
             repo_root = Path(repo_path)
             
+            # Files to exclude from analysis (existing documentation that could cause
+            # circular or confused output in the generated README)
+            excluded_filenames = {'readme.md', 'readme.rst', 'readme.txt'}
+
             # Walk through directory
             for file_path in repo_root.rglob('*'):
                 # Skip if it's not a file
                 if not file_path.is_file():
+                    continue
+
+                # Skip excluded filenames (e.g. existing README files)
+                if file_path.name.lower() in excluded_filenames:
+                    logger.info(f"Skipping existing documentation file: {file_path.name}")
                     continue
                 
                 # Skip excluded directories
