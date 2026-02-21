@@ -15,7 +15,7 @@ class ManagerAgent(BaseAgent):
 
     def __init__(self):
         # Use thinking model for complex review decisions
-        super().__init__("Manager", settings.model_flash_thinking)
+        super().__init__("Manager", settings.model_flash_lite)
 
     def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """

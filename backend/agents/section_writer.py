@@ -14,7 +14,6 @@ BADGE_HEADINGS = {
 MINIMAL_CODE_HEADINGS = {
     "quick start",
     "development",
-    "deployment",
 }
 
 
@@ -120,7 +119,7 @@ class SectionWriterAgent(BaseAgent):
             {"role": "user", "content": prompt},
         ]
 
-        content = self._call_llm(messages, max_tokens=2048, temperature=0.5)
+        content = self._call_llm(messages, max_tokens=8192, temperature=0.5)
 
         # Remove any outer markdown code fence that the LLM may have wrapped the
         # entire response in (e.g. ```markdown … ```).
