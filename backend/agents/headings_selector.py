@@ -16,7 +16,6 @@ CANDIDATE_HEADINGS: List[str] = [
     "Results & Visualizations",
     "Architecture",
     "Tech Stack",
-    "Dependencies & Packages",
     "Prerequisites",
     "Installation",
     "Quick Start",
