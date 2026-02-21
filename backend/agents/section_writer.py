@@ -95,13 +95,17 @@ class SectionWriterAgent(BaseAgent):
             f'You are writing the **{heading}** section for the README of the '
             f'repository "{repo_name}".\n\n'
             f'Here is a concise summary of every file in the codebase '
-            f'(use this as your primary context):\n'
+            f'(use this as your ONLY source of truth):\n'
             f'{codebase_summary}\n\n'
             f'Write ONLY the content for the "{heading}" section. '
             f'Start directly with the markdown heading (e.g., ## {heading}).\n'
-            f'Be thorough, accurate, and professional. '
-            f'Use proper Markdown formatting with emojis where appropriate.\n'
-            f'Do NOT include any other sections — only "{heading}".'
+            f'CRITICAL RULES:\n'
+            f'- ONLY mention things that are explicitly evidenced by the codebase summary above. '
+            f'Do NOT invent, assume, or hallucinate any features, technologies, files, or '
+            f'capabilities that are not directly mentioned in the codebase summary.\n'
+            f'- Be concise. Aim for 60–200 words of body text. Do NOT pad with filler.\n'
+            f'- Use proper Markdown formatting with emojis where appropriate.\n'
+            f'- Do NOT include any other sections — only "{heading}".'
             f'{badge_instruction}'
             f'{minimal_code_instruction}'
             f'{improvement_block}'
@@ -119,7 +123,7 @@ class SectionWriterAgent(BaseAgent):
             {"role": "user", "content": prompt},
         ]
 
-        content = self._call_llm(messages, max_tokens=2048, temperature=0.5)
+        content = self._call_llm(messages, max_tokens=700, temperature=0.5)
 
         # Remove any outer markdown code fence that the LLM may have wrapped the
         # entire response in (e.g. ```markdown … ```).
