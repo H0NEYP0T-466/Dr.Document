@@ -7,7 +7,6 @@ from backend.logger import logger
 # Headings that must render their content as shields.io badges
 BADGE_HEADINGS = {
     "tech stack",
-    "dependencies & packages",
     "prerequisites",
 }
 
@@ -66,6 +65,12 @@ class SectionWriterAgent(BaseAgent):
         # Badge instruction for tech / dependency sections
         badge_instruction = ''
         if heading.lower() in BADGE_HEADINGS:
+            extra = (
+                ' Also include any critical third-party dependencies or packages as badges '
+                '(e.g. key libraries, frameworks, or tools the project depends on).'
+                if heading.lower() == 'tech stack'
+                else ''
+            )
             badge_instruction = (
                 '\n\nIMPORTANT: Render every technology / package / tool as a shields.io badge '
                 'using this exact format:\n'
@@ -74,7 +79,7 @@ class SectionWriterAgent(BaseAgent):
                 'Group related badges inside <p> tags. '
                 'Use hex colours from simpleicons.org '
                 '(e.g. Python=3776AB, React=61DAFB, FastAPI=009688, Docker=2496ED, '
-                'PostgreSQL=4169E1, TypeScript=3178C6, Node.js=339933).'
+                f'PostgreSQL=4169E1, TypeScript=3178C6, Node.js=339933).{extra}'
             )
 
         # Minimal-code instruction for quickstart / development / deployment
@@ -117,9 +122,50 @@ class SectionWriterAgent(BaseAgent):
 
         content = self._call_llm(messages, max_tokens=2048, temperature=0.5)
 
+        # Keep only the content for THIS heading — stop at any subsequent H1/H2 heading
+        # so a misbehaving LLM cannot bleed other sections into this one.
+        content = self._trim_to_single_section(content.strip())
+
         logger.success(f"Wrote section '{heading}' ({len(content.split())} words)")
 
         return {
             'heading': heading,
             'content': content.strip(),
         }
+
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _trim_to_single_section(self, content: str) -> str:
+        """
+        Ensure the content belongs to only ONE section.
+
+        The LLM is asked to write a single ``## Heading`` block, but it
+        sometimes appends additional ``##`` or ``#`` sections.  We keep
+        everything up to (but not including) the second top-level (H1/H2)
+        heading so that stray sections are stripped before the content is
+        used in the combined README.
+        """
+        lines = content.split('\n')
+        result: list[str] = []
+        found_main = False
+
+        for line in lines:
+            stripped = line.strip()
+            # Detect an H1 or H2 heading (but not H3+)
+            is_h1 = stripped.startswith('# ')
+            is_h2 = stripped.startswith('## ')
+            is_top_heading = is_h1 or is_h2
+
+            if not found_main:
+                result.append(line)
+                if is_top_heading:
+                    found_main = True
+            else:
+                # Stop at the next H1/H2 — that belongs to a different section
+                if is_top_heading:
+                    break
+                result.append(line)
+
+        return '\n'.join(result).strip()
