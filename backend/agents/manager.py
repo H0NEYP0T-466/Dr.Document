@@ -47,8 +47,8 @@ class ManagerAgent(BaseAgent):
         prompt = (
             f'You are a senior documentation manager reviewing the "{heading}" section '
             f'of a README for the repository "{repo_name}".\n\n'
-            f'CODEBASE CONTEXT (file summaries — first 3000 chars):\n'
-            f'{codebase_summary[:3000]}\n\n'
+            f'CODEBASE CONTEXT\n'
+            f'{codebase_summary}\n\n'
             f'SECTION CONTENT TO REVIEW:\n'
             f'{section_content}\n\n'
             f'Review this section and provide:\n'
@@ -57,8 +57,6 @@ class ManagerAgent(BaseAgent):
             f'3. FEEDBACK: What is good about this section?\n'
             f'4. IMPROVEMENT NOTES (only if rejecting): Specific, actionable improvements needed. '
             f'Be very precise about what is missing, wrong, or needs to change.\n\n'
-            f'Be strict but fair. APPROVE only if the section is accurate, complete, and '
-            f'well-written for a professional GitHub README.'
         )
 
         messages = [

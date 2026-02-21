@@ -34,7 +34,6 @@ class CodeReaderAgent(BaseAgent):
         """
         file_path = input_data.get('file_path', 'unknown')
         file_content = input_data.get('file_content', '')
-        language = input_data.get('language', 'unknown')
         
         logger.file_process(file_path, 'Analyzing')
         
@@ -50,7 +49,7 @@ class CodeReaderAgent(BaseAgent):
             }
         
         # Prepare prompt for LLM
-        prompt = f"""Analyze the following {language} code file and provide a comprehensive analysis.
+        prompt = f"""Analyze the following code file and provide a comprehensive analysis.
 
 File: {file_path}
 

@@ -51,9 +51,9 @@ class FinalReviewerAgent(BaseAgent):
         prompt = (
             f'You are conducting a final quality review of a generated README for "{repo_name}".\n\n'
             f'CODEBASE CONTEXT (file summaries — first 3000 chars):\n'
-            f'{codebase_summary[:3000]}\n\n'
+            f'{codebase_summary}\n\n'
             f'GENERATED README:\n'
-            f'{readme_content[:6000]}\n\n'
+            f'{readme_content}\n\n'
             f'Please validate the README thoroughly:\n\n'
             f'1. COMPLETENESS CHECK (0-100):\n'
             f'   - Are all essential sections present?\n'

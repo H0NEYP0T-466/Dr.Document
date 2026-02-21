@@ -46,7 +46,7 @@ class RequirementsExtractorAgent(BaseAgent):
         prompt = f"""Based on the following code analyses for repository '{repo_name}', extract comprehensive requirements.
 
 Combined Code Analysis:
-{combined_analysis[:4000]}
+{combined_analysis}
 
 Please extract and categorize:
 

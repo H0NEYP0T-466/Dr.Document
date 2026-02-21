@@ -86,14 +86,15 @@ Create a complete README with the following sections:
    <img src="https://img.shields.io/badge/TECHNOLOGY_NAME-COLOR?style=for-the-badge&logo=LOGO_NAME&logoColor=white">
    Use appropriate colors and logos from simpleicons.org (e.g., Python=3776AB, React=61DAFB, FastAPI=009688, Docker=2496ED, PostgreSQL=4169E1, TypeScript=3178C6, JavaScript=F7DF1E, Node.js=339933, etc.)
    Group them in <p> tags.
-6. ARCHITECTURE - System design and patterns
-7. INSTALLATION - Setup instructions
-8. USAGE - How to use the project
-9. API DOCUMENTATION (if applicable)
-10. CONFIGURATION - Environment variables and settings
-11. CONTRIBUTING - Guidelines for contributors
-12. LICENSE - License information
-13. ACKNOWLEDGMENTS - Credits and thanks
+6. Dependencies BADGES - If the project has major dependencies (e.g., TensorFlow, PyTorch, React), include badges for those as well.   
+7. ARCHITECTURE - System design and patterns
+8. INSTALLATION - Setup instructions
+9. USAGE - How to use the project
+10. API DOCUMENTATION (if applicable)
+11. CONFIGURATION - Environment variables and settings
+12. CONTRIBUTING - Guidelines for contributors
+13. LICENSE - License information
+14. ACKNOWLEDGMENTS - Credits and thanks
 
 Requirements:
 - Use proper Markdown formatting

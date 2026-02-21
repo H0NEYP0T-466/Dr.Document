@@ -79,10 +79,8 @@ class HeadingsSelectorAgent(BaseAgent):
             f'Rules:\n'
             f'1. Only include headings that are relevant to this project '
             f'(e.g., "Dataset & Training Details" only if it is an ML/DL project).\n'
-            f'2. You may suggest additional headings not in the list if the project genuinely needs them.\n'
-            f'3. Always include at minimum: Abstract, Features, Installation, Usage, '
-            f'Tech Stack, Contributing, License.\n'
-            f'4. Return ONLY the list of selected headings, one per line, nothing else. '
+            f'2. You may suggest additional headings not in the list if the project needs them.\n'
+            f'3. Return ONLY the list of selected headings, one per line, nothing else. '
             f'No numbering, no bullets, no explanations.'
         )
 
