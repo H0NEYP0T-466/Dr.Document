@@ -122,6 +122,10 @@ class SectionWriterAgent(BaseAgent):
 
         content = self._call_llm(messages, max_tokens=2048, temperature=0.5)
 
+        # Remove any outer markdown code fence that the LLM may have wrapped the
+        # entire response in (e.g. ```markdown … ```).
+        content = self._strip_markdown_fence(content.strip())
+
         # Keep only the content for THIS heading — stop at any subsequent H1/H2 heading
         # so a misbehaving LLM cannot bleed other sections into this one.
         content = self._trim_to_single_section(content.strip())
@@ -137,6 +141,32 @@ class SectionWriterAgent(BaseAgent):
     # Helpers
     # ------------------------------------------------------------------
 
+    def _strip_markdown_fence(self, content: str) -> str:
+        """
+        Remove an outer markdown code fence if the LLM wrapped its entire
+        response in one (e.g. ```markdown … ``` or ``` … ```).
+        """
+        lines = content.split('\n')
+
+        # Find the first and last non-empty lines
+        start = 0
+        while start < len(lines) and not lines[start].strip():
+            start += 1
+        end = len(lines) - 1
+        while end >= 0 and not lines[end].strip():
+            end -= 1
+
+        if start > end:
+            return content
+
+        first_line = lines[start].strip()
+        last_line = lines[end].strip()
+
+        if first_line.startswith('```') and last_line.startswith('```') and not last_line.lstrip('`'):
+            return '\n'.join(lines[start + 1:end])
+
+        return content
+
     def _trim_to_single_section(self, content: str) -> str:
         """
         Ensure the content belongs to only ONE section.
@@ -146,16 +176,32 @@ class SectionWriterAgent(BaseAgent):
         everything up to (but not including) the second top-level (H1/H2)
         heading so that stray sections are stripped before the content is
         used in the combined README.
+
+        Code fences (``` or ~~~) are tracked so that ``#`` characters inside
+        code blocks are never mistaken for Markdown headings.
         """
         lines = content.split('\n')
         result: list[str] = []
         found_main = False
+        in_code_fence = False
 
         for line in lines:
             stripped = line.strip()
-            # Detect an H1 or H2 heading (but not H3+)
-            is_h1 = stripped.startswith('# ')
-            is_h2 = stripped.startswith('## ')
+
+            # Track code-fence boundaries (``` or ~~~).
+            # Only toggle when the rest of the line after the fence marker is
+            # empty or a simple language identifier (no spaces), so that a line
+            # like "```python # example" inside a code block is NOT treated as
+            # a fence boundary.
+            if stripped.startswith('```') or stripped.startswith('~~~'):
+                fence_char = stripped[0]
+                rest = stripped.lstrip(fence_char).strip()
+                if ' ' not in rest:
+                    in_code_fence = not in_code_fence
+
+            # Only treat a line as a heading when we are NOT inside a code fence
+            is_h1 = not in_code_fence and stripped.startswith('# ')
+            is_h2 = not in_code_fence and stripped.startswith('## ')
             is_top_heading = is_h1 or is_h2
 
             if not found_main:
