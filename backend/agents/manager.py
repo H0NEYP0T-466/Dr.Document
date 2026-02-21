@@ -60,7 +60,7 @@ class ManagerAgent(BaseAgent):
             f'IMPORTANT: Reject the section if ANY of the following are present:\n'
             f'- Content that is NOT evidenced by the codebase context above (hallucination)\n'
             f'- Claims about features, technologies, or files that do not appear in the codebase\n'
-            f'- The section body exceeds ~200 words (it should be concise)\n'
+            f'- The section body exceeds ~600 words without sufficient detail to justify the length\n'
             f'- The section content is wrapped in a markdown code fence (e.g. ```markdown ... ```)\n'
             f'- Unclosed code blocks (missing closing ```)\n'
             f'- Missing blank lines before or after headings and code blocks\n'

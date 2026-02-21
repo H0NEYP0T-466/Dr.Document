@@ -16,14 +16,17 @@ CANDIDATE_HEADINGS: List[str] = [
     "Results & Visualizations",
     "Architecture",
     "Tech Stack",
+    "Dependencies & Packages",
     "Prerequisites",
     "Installation",
     "Quick Start",
     "Usage",
     "API Endpoints",
     "Configuration",
+    "Environment Variables",
     "Model Setup & Training",
     "Project Structure",
+    "Table of Contents",
     "Documentation",
     "Submodules",
     "Development",
@@ -77,8 +80,10 @@ class HeadingsSelectorAgent(BaseAgent):
             f'{codebase_summary}\n\n'
             f'Here are candidate headings:\n{candidate_list}\n\n'
             f'Rules:\n'
-            f'1. Select a MAXIMUM of 8 headings. Fewer is better — only include headings that '
-            f'are clearly and directly supported by the codebase above. If in doubt, leave it out.\n'
+            f'1. Select between 8 and 14 headings (14 is the maximum). Include all headings that '
+            f'are clearly and directly supported by the codebase above. Aim for comprehensive '
+            f'coverage — do not omit important sections just to keep the list short. '
+            f'If more than 14 headings are supported, select the 14 most important ones.\n'
             f'2. NEVER include a heading unless the codebase summary explicitly evidences it '
             f'(e.g., "Dataset & Training Details" ONLY if ML/DL code is present, '
             f'"API Endpoints" ONLY if there are route definitions, '
