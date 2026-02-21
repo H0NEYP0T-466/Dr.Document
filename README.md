@@ -12,6 +12,24 @@ An intelligent documentation system that uses multi-agent AI to automatically an
 - 🚀 **LongCat Integration**: Efficient token usage with Flash-Lite models
 - 📥 **Export Options**: Copy or download generated README files
 
+## 🛠️ Tech Stack
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+</p>
+
+## 📦 Dependencies
+
+<p>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git">
+  <img src="https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="WebSocket">
+</p>
+
 ## 🏗️ Architecture
 
 ### Backend (FastAPI + Python)
@@ -120,12 +138,6 @@ VITE_API_URL=http://localhost:8000
 3. **Click "Generate Documentation"**
 4. **Watch the agents work** in real-time
 5. **Review the generated README** and export it
-
-## 🤖 AI Models Used
-
-- **LongCat-Flash-Lite**: Primary model for code analysis and extraction (50M tokens available)
-- **LongCat-Flash-Chat**: Content generation and README writing
-- **LongCat-Flash-Thinking**: Complex decision-making and reviews
 
 ## 📁 Project Structure
 
@@ -240,3 +252,7 @@ This project is part of the Dr. Document system.
 - [ ] Batch processing capabilities
 - [ ] Enhanced code pattern detection
 - [ ] Integration with CI/CD pipelines
+
+---
+
+<p align="center">Made with ❤️ by <a href="https://github.com/H0NEYP0T-466">H0NEYP0T-466</a></p>
