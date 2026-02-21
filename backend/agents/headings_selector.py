@@ -5,35 +5,36 @@ from backend.config import settings
 from backend.logger import logger
 
 
-# Predefined candidate headings (the agent may add others)
+# Predefined candidate headings in the preferred documentation order.
+# Features / highlights come BEFORE tech-stack / dependencies.
 CANDIDATE_HEADINGS: List[str] = [
     "Abstract",
     "Key Highlights",
+    "Features",
     "Dataset & Training Details",
-    "Architecture",
     "Methodology",
     "Results & Visualizations",
-    "Quick Start",
-    "Features",
-    "Project Structure",
-    "Documentation",
-    "API Endpoints",
-    "Model Setup & Training",
-    "Configuration",
-    "Development",
-    "Deployment",
-    "Installation",
-    "Usage",
-    "Submodules",
+    "Architecture",
     "Tech Stack",
     "Dependencies & Packages",
     "Prerequisites",
-    "Contributing",
-    "License",
+    "Installation",
+    "Quick Start",
+    "Usage",
+    "API Endpoints",
+    "Configuration",
+    "Model Setup & Training",
+    "Project Structure",
+    "Documentation",
+    "Submodules",
+    "Development",
+    "Deployment",
     "Security",
+    "Contributing",
     "Code of Conduct",
     "Citation",
     "Contact",
+    "License",
     "Acknowledgments",
 ]
 
@@ -80,7 +81,11 @@ class HeadingsSelectorAgent(BaseAgent):
             f'1. Only include headings that are relevant to this project '
             f'(e.g., "Dataset & Training Details" only if it is an ML/DL project).\n'
             f'2. You may suggest additional headings not in the list if the project needs them.\n'
-            f'3. Return ONLY the list of selected headings, one per line, nothing else. '
+            f'3. Return headings in a logical documentation order: overview/description first, '
+            f'then features/highlights, then tech stack/dependencies, then setup/installation, '
+            f'then usage/API, then contributing/license/acknowledgments at the end. '
+            f'NEVER put Tech Stack or Dependencies before Features.\n'
+            f'4. Return ONLY the list of selected headings, one per line, nothing else. '
             f'No numbering, no bullets, no explanations.'
         )
 

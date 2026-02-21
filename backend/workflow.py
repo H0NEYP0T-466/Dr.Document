@@ -527,30 +527,12 @@ class DocumentationWorkflow:
             parts.append(section['content'])
             parts.append('')  # blank line between sections
 
-        # Build "Made with ❤️" footer with dependency badges
+        # Footer: "Made with ❤️ by username" only — no tech-stack badges at the bottom
         username = repo_name.split('/')[0] if '/' in repo_name else repo_name
-        badge_html = self._extract_dep_badges(sections)
         parts.append('---')
         parts.append('')
-        if badge_html:
-            parts.append(f'<p align="center">{badge_html}</p>')
-            parts.append('')
         parts.append(
             f'<p align="center">Made with ❤️ by '
             f'<a href="https://github.com/{username}">{username}</a></p>'
         )
         return '\n'.join(parts)
-
-    def _extract_dep_badges(self, sections: List[Dict[str, str]]) -> str:
-        """Extract shields.io badge <img> tags from tech-stack / dependency sections."""
-        badge_sections = {'tech stack', 'dependencies & packages', 'prerequisites'}
-        badges: List[str] = []
-        seen: set = set()
-        for section in sections:
-            if section['heading'].lower() in badge_sections:
-                imgs = re.findall(r'<img\s[^>]*shields\.io[^>]*>', section['content'])
-                for img in imgs:
-                    if img not in seen:
-                        seen.add(img)
-                        badges.append(img)
-        return ' '.join(badges)
