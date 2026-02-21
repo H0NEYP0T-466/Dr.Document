@@ -87,13 +87,12 @@ Create a complete README with the following sections:
    Use appropriate colors and logos from simpleicons.org (e.g., Python=3776AB, React=61DAFB, FastAPI=009688, Docker=2496ED, PostgreSQL=4169E1, TypeScript=3178C6, JavaScript=F7DF1E, Node.js=339933, etc.)
    Group them in <p> tags.  
 6. ARCHITECTURE - System design and patterns
-7. INSTALLATION - Setup instructions
-8. USAGE - How to use the project
-9. API DOCUMENTATION (if applicable)
-10. CONFIGURATION - Environment variables and settings
-11. CONTRIBUTING - Guidelines for contributors
-12. LICENSE - License information
-13. ACKNOWLEDGMENTS - Credits and thanks
+7. INSTALLATION/Usage - Setup instructions
+8. API DOCUMENTATION (if applicable)
+9. CONFIGURATION - Environment variables and settings
+10. CONTRIBUTING - Guidelines for contributors
+11. LICENSE - License information
+12. ACKNOWLEDGMENTS - Credits and thanks
 
 Requirements:
 - Use proper Markdown formatting
@@ -104,6 +103,7 @@ Requirements:
 - Use tables, lists, and formatting for readability
 - ALWAYS include the shields.io badges section right after the title
 - ALWAYS render the tech stack as badges instead of plain text
+- Never mention the file name or any other irrelevant things only releated to the README content
 
 Generate a README that will make developers excited to use this project!"""
         
