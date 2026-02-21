@@ -1,6 +1,5 @@
-# H0NEYP0T-466/Dr.Document
 
-# Dr. Document README Sections
+# Dr. Document 
 
 Dr. Document is a sophisticated AI-powered GitHub documentation generator featuring a complete 5-agent workflow system that automatically analyzes repositories and generates comprehensive, professional README files. The project consists of a robust backend built with FastAPI and Python, and a modern React frontend with TypeScript, providing real-time progress tracking and interactive documentation generation.
 
