@@ -1,184 +1,194 @@
-# H0NEYP0T-466/Dr.Document
+# Dr. Document - AI-Powered GitHub Documentation Generator
 
-# Dr. Document README Sections
-
-Dr. Document is a sophisticated AI-powered GitHub documentation generator featuring a complete 5-agent workflow system that automatically analyzes repositories and generates comprehensive, professional README files. The project consists of a robust backend built with FastAPI and Python, and a modern React frontend with TypeScript, providing real-time progress tracking and interactive documentation generation.
-
-## Key Highlights
-
-Dr. Document is a sophisticated AI-powered GitHub documentation generator featuring a robust multi-agent workflow system that automates the creation of comprehensive README files for software repositories. The application is built with a modern full-stack architecture combining a React frontend with TypeScript and a Python FastAPI backend, providing both real-time user interaction and powerful AI-driven processing capabilities.
-
-The system implements a **five-agent workflow architecture** that orchestrates specialized AI agents to analyze repositories and generate professional documentation. The workflow begins with the **Codebase Summarizer Agent**, which generates concise summaries for each file in the codebase, followed by the **Code Reader Agent** that extracts functions, classes, and dependencies from code files. The **Requirements Extractor Agent** identifies functional and non-functional requirements, while the **Headings Selector Agent** determines the most relevant documentation sections based on codebase analysis. Finally, the **Readme Writer Agent** synthesizes all collected information into a structured, well-formatted README.md file with proper badges and examples.
-
-The backend is built on **FastAPI** with **Uvicorn** serving, providing asynchronous processing capabilities and WebSocket support for real-time progress tracking. The system integrates with **OpenAI's language models** through a standardized agent interface, enabling sophisticated natural language processing and code analysis. Configuration is managed through a **Pydantic-based system** that supports environment variables and type-safe settings for API keys, model parameters, and storage paths.
-
-The frontend provides an intuitive interface built with **React and TypeScript**, featuring a dark theme with gradient backgrounds and smooth animations. Users can input GitHub repository URLs through a dedicated form component, and the system displays real-time progress updates via WebSocket connections. The interface includes comprehensive status indicators, progress bars, and a final results display with syntax-highlighted markdown preview and export functionality.
-
-The application includes **comprehensive logging capabilities** with color-coded output, emoji support, and both console and file logging options. Security is addressed through a completed security audit that confirms all vulnerabilities have been resolved. The project follows strict development standards with ESLint configuration, TypeScript strict mode, and detailed contribution guidelines.
-
-Key technical features include **WebSocket-based real-time updates**, **responsive design with modern CSS styling**, **dependency management through package.json and requirements.txt**, and **modular agent architecture** that can be easily extended or modified. The system supports file size limits, handles various code file types, and provides robust error handling throughout the documentation generation process.
+🚀 **Dr. Document** is an intelligent, AI-driven documentation generator that transforms GitHub repositories into professional, comprehensive README files using a sophisticated multi-agent workflow system. Built with modern web technologies and powered by advanced language models, this tool automates the entire documentation process from repository analysis to final content generation.
 
 ## Features
 
-### 🤖 AI-Powered Multi-Agent Documentation Generation
-Dr. Document leverages a sophisticated **5-agent AI workflow** to automatically analyze and document GitHub repositories. The system orchestrates specialized agents including codebase summarizer, requirements extractor, section writer, headings selector, and final reviewer to generate comprehensive documentation.
+### 🤖 Multi-Agent AI System
 
-### 🔄 Real-Time Progress Tracking
-Built with **WebSocket support**, the application provides live updates during the documentation generation process. Users can monitor agent status, progress bars, and receive real-time notifications as each agent completes its tasks, creating an engaging and transparent workflow experience.
+Dr. Document features a sophisticated **5-agent AI workflow** that collaboratively analyzes and documents GitHub repositories. The system orchestrates specialized agents including code readers, summarizers, requirements extractors, section writers, and reviewers to generate comprehensive documentation.
 
-### 📊 Interactive Dashboard Interface
-The frontend features a modern React-based dashboard with **AgentWorkspace** displaying a grid of agent cards showing individual progress, status indicators, and completion metrics. The interface uses gradient designs, hover effects, and responsive layouts for an intuitive user experience.
+### 📊 Real-Time Progress Tracking
 
-### 🔗 GitHub Repository Integration
-Users can input GitHub repository URLs through a dedicated **RepoInput component** that validates URLs and initiates the documentation generation process. The backend includes a robust GitHub client that clones repositories and scans for relevant code files while excluding unnecessary directories.
+The application provides **live status updates** through WebSocket connections, allowing users to monitor the documentation generation process in real-time. Each agent's progress is tracked individually with visual indicators, and an overall progress bar shows the complete workflow status.
 
-### 📝 Comprehensive README Generation
-The system generates professional **README.md files** with structured sections, badges, code examples, and detailed explanations. Each section is written by specialized agents and reviewed for quality, ensuring accurate and useful documentation that matches the codebase structure.
+### 🔍 Intelligent Code Analysis
 
-### 🛠️ Advanced Code Analysis
-Multiple agents perform deep code analysis including **function extraction, class identification, dependency mapping, and architectural pattern recognition**. The code reader agent analyzes individual files while the requirements extractor identifies functional and technical requirements.
+The system performs **deep codebase analysis** including:
+- File-by-file code summarization with LLM-based insights
+- Function and class extraction from source files
+- Dependency and technical stack identification
+- Requirements extraction (functional and non-functional)
+- Architectural pattern recognition
 
-### ⚡ High-Performance Backend
-Built with **FastAPI and Uvicorn**, the backend provides asynchronous processing with auto-reload capabilities on port 8004. The system handles multiple concurrent requests efficiently while maintaining real-time communication through WebSocket connections.
+### 📝 Automated Documentation Generation
 
-### 🔒 Secure Configuration Management
-The application uses **Pydantic-based configuration** with environment variable support for managing API keys, model settings, and storage paths. A comprehensive security audit confirms all vulnerabilities have been resolved for production readiness.
+Dr. Document generates **professional README.md files** with:
+- Structured sections based on codebase analysis
+- Badges and metadata
+- Code examples and usage instructions
+- Repository statistics and metrics
+- Quality-checked content with manager approval
 
-### 📱 Responsive Design
-The frontend is built with **Vite, React, and TypeScript** featuring dark themes, custom scrollbars, and modern CSS styling. The interface adapts seamlessly across devices with gradient backgrounds and smooth animations.
+### 🌐 GitHub Integration
 
-### 🔄 Workflow Orchestration
-The **workflow.py** module coordinates the multi-agent process, managing repository cloning, agent execution, and result aggregation. Each agent follows a standardized interface while providing specialized functionality for comprehensive documentation generation.
+Full **GitHub repository support** with:
+- Repository URL input and validation
+- Automatic cloning and file scanning
+- Exclusion of irrelevant directories and file types
+- Read-only file handling during analysis
+
+### 💻 Modern React Frontend
+
+Built with **React 18 and TypeScript** featuring:
+- Responsive dark-themed UI
+- Component-based architecture with proper separation
+- Real-time WebSocket communication
+- Error handling and loading states
+- Copy/download functionality for generated documentation
+
+### ⚡ FastAPI Backend
+
+High-performance **FastAPI backend** with:
+- RESTful API endpoints for job management
+- WebSocket support for real-time updates
+- Async workflow processing
+- Comprehensive logging system with color-coded output
+- Pydantic-based configuration management
+
+### 🔧 Developer-Friendly Tooling
+
+Comprehensive development setup including:
+- Vite-based build system with TypeScript support
+- ESLint configuration for code quality
+- Multi-root TypeScript configuration
+- Virtual environment management
+- Detailed logging and error reporting
+
+### 🛡️ Production-Ready Infrastructure
+
+Enterprise-grade features including:
+- Security audit completion
+- Comprehensive error handling
+- Configuration management with environment variables
+- Structured logging system
+- Test suite for core components
 
 ## Tech Stack
 
-### Backend Technologies
-
-The backend is built with a modern Python stack featuring **FastAPI** as the web framework, providing high-performance API endpoints and automatic OpenAPI documentation. The application uses **Uvicorn** as the ASGI server to run the FastAPI application with WebSocket support and auto-reload capabilities. For AI integration, the backend leverages **OpenAI's GPT models** through their official Python SDK, enabling sophisticated natural language processing and code analysis capabilities.
-
-The backend architecture follows a modular design with a comprehensive agent system built on an abstract `BaseAgent` class that provides standardized LLM integration, logging, and workflow management. Key agents include `CodebaseSummarizerAgent`, `HeadingsSelectorAgent`, `SectionWriterAgent`, `RequirementsExtractorAgent`, and specialized agents like `ManagerAgent` and `FinalReviewerAgent` that work together in a coordinated workflow to generate comprehensive documentation.
-
-<p>
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Uvicorn-438EE4?style=for-the-badge&logo=gunicorn&logoColor=white" alt="Uvicorn">
-  <img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI">
-</p>
-
 ### Frontend Technologies
-
-The frontend is a modern React application built with **TypeScript** for type safety and better developer experience. The project uses **Vite** as the build tool, configured through `vite.config.ts`, providing fast development server and optimized production builds. The UI components are built using React functional components with hooks for state management, featuring real-time updates through WebSocket connections to the backend.
-
-The application implements a sophisticated multi-agent dashboard with components like `AgentWorkspace`, `AgentCard`, `RepoInput`, and `ResultDisplay` that provide interactive progress tracking and documentation preview capabilities. The styling is implemented with custom CSS featuring dark themes, gradient backgrounds, and smooth animations for a modern user experience.
+The frontend is built using a modern React-based stack with TypeScript for type safety and Vite as the build tool for fast development and hot module replacement.
 
 <p>
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
-  <img src="https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="WebSocket">
 </p>
 
-### Development & Tooling
+The application uses ESLint with React and TypeScript support for code quality, and includes comprehensive CSS styling for a dark-themed user interface with gradient backgrounds and responsive design.
 
-The project uses **ESLint** for code quality enforcement with React-specific rules and **TypeScript** configurations for both frontend (`tsconfig.app.json`) and backend (`tsconfig.node.json`) environments. The development workflow is supported by comprehensive configuration files including `package.json` for frontend dependencies, `requirements.txt` for Python packages, and various configuration files for TypeScript, ESLint, and Vite.
-
-The project structure includes proper separation of concerns with distinct directories for backend agents, frontend components, API clients, and type definitions, all managed through a workspace-based TypeScript configuration system.
+### Backend Technologies
+The backend is powered by FastAPI, a modern Python web framework that provides excellent performance and automatic API documentation generation.
 
 <p>
-  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint">
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white" alt="Markdown">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Uvicorn-4998FF?style=for-the-badge&logo=uvicorn&logoColor=white" alt="Uvicorn">
 </p>
+
+The backend implements a sophisticated multi-agent AI system using OpenAI's language models, with specialized agents for code analysis, requirements extraction, documentation generation, and quality review. It includes comprehensive logging, configuration management, and GitHub repository integration.
+
+### Key Dependencies
+Critical third-party packages include OpenAI for AI-powered agent functionality, Pydantic for data validation, and GitPython for repository operations.
+
+<p>
+  <img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI">
+  <img src="https://img.shields.io/badge/Pydantic-FF6B35?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic">
+  <img src="https://img.shields.io/badge/GitPython-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="GitPython">
+</p>
+
+The system supports real-time WebSocket communication for live agent status updates, includes comprehensive error handling, and provides RESTful API endpoints for repository processing and result retrieval.
 
 ## Dependencies & Packages
 
-Dr. Document is built using a modern full-stack architecture with carefully selected dependencies for both frontend and backend functionality. The project uses **Vite** as the build tool for the React-based frontend, with **TypeScript** providing strict type safety across all client-side code. For code quality assurance, the project leverages **ESLint** configured with React Hooks and React Refresh plugins, ensuring consistent coding standards and preventing common React anti-patterns.
+### Frontend Dependencies
 
-The frontend relies on core React dependencies including `react`, `react-dom`, and `react-router-dom` for navigation. For rendering and displaying generated documentation, the application uses `react-markdown` and `react-syntax-highlighter` to provide rich markdown preview with syntax highlighting capabilities. The UI components are styled using standard CSS with custom styling for dark themes, gradient backgrounds, and interactive elements.
+The React-based frontend is built with **Vite** as the build tool and **TypeScript** for type safety. The project uses **React 18** with the official Vite React plugin for optimal performance and developer experience. **ESLint** is configured with TypeScript and React support using the flat config format for code quality enforcement. The UI leverages **react-syntax-highlighter** for markdown and code syntax highlighting in the documentation display components.
 
-The backend is powered by **FastAPI**, a modern Python web framework that provides high-performance API endpoints and automatic OpenAPI documentation. **Uvicorn** serves as the ASGI server for running the FastAPI application with WebSocket support for real-time updates. The backend integrates with **OpenAI's GPT models** through the official `openai` Python client for AI-powered code analysis and documentation generation.
+### Backend Dependencies
 
-For configuration management, the project uses **Pydantic** to define structured configuration classes with environment variable support, ensuring type-safe settings management. **aiofiles** enables asynchronous file operations during repository cloning and processing, while **GitPython** provides comprehensive Git repository interaction capabilities. The logging system utilizes standard Python `logging` with custom formatting and color-coded output.
+The Python backend is powered by **FastAPI** as the web framework, with **Uvicorn** serving as the ASGI server. **Pydantic** is used for data validation and settings management through the `config.py` file. The system integrates with **OpenAI's API** for LLM-powered agent processing, requiring the `openai` package. **GitPython** handles repository cloning and management via the `github_client.py` module. Additional utilities include **python-dotenv** for environment variable management and **requests** for HTTP client functionality.
 
-The multi-agent workflow system relies on several specialized agents including code summarization, requirements extraction, section writing, and final review capabilities. These agents are orchestrated through an asynchronous workflow system that coordinates the entire documentation generation process. The backend also includes WebSocket support for real-time progress tracking between the frontend and backend components.
+### Development Tools
 
-All dependencies are carefully version-locked in `package-lock.json` and `requirements.txt` to ensure reproducible builds and consistent development environments across the team.
+**TypeScript** is configured with strict type checking across multiple `tsconfig.json` files supporting both the main application (`tsconfig.app.json`) and Node.js development environment (`tsconfig.node.json`). **Vite** provides fast development server and build tooling with hot module replacement. **ESLint** ensures code consistency with React Hooks and TypeScript support. The project uses **npm** as the package manager, with all dependencies locked in `package-lock.json` for reproducible builds.
+
+### Key Package Files
+
+- `package.json` - Frontend dependencies and scripts
+- `backend/requirements.txt` - Backend Python package requirements
+- `tsconfig.json` - Multi-root TypeScript configuration
+- `vite.config.ts` - Vite build and development configuration
+- `eslint.config.js` - ESLint configuration with React and TypeScript support
+
+This dependency structure enables a modern full-stack development workflow with type safety, fast builds, and comprehensive code quality tooling.
 
 ## Prerequisites
 
-Before setting up and running the Dr. Document project, ensure your development environment meets the following requirements:
+Before setting up and running the **Dr. Document** project, ensure your development environment meets the following requirements. This project is a full-stack AI-powered GitHub documentation generator with a multi-agent workflow system.
 
-### Core Technologies
+### Backend Requirements
 
-The project is built using a modern full-stack architecture with the following primary technologies:
+The backend is built using **Python 3.11+** and leverages **FastAPI** as its web framework. You'll need to install the required Python packages defined in `backend/requirements.txt`, which includes dependencies for OpenAI integration, Git operations, and configuration management.
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/Uvicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white" alt="Uvicorn">
 </p>
-
-### Backend Requirements
-
-The backend requires Python 3.9+ and uses several key dependencies:
-
-- **OpenAI API integration** for LLM-powered agent workflows
-- **WebSocket support** for real-time progress tracking
-- **GitHub repository cloning** capabilities
-- **FastAPI framework** with Uvicorn server
-
-Install backend dependencies using:
-```bash
-pip install -r backend/requirements.txt
-```
-
-It's strongly recommended to use a virtual environment before installing packages.
 
 ### Frontend Requirements
 
-The frontend requires Node.js 16+ and uses:
+The frontend is a modern React application built with **TypeScript** and powered by **Vite** for fast development and building. It requires **Node.js 18+** and **npm** or **yarn** to manage dependencies.
 
-- **React 18** with TypeScript support
-- **Vite** as the build tool
-- **ESLint** for code quality
-- **Markdown rendering** and syntax highlighting
+<p>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+</p>
 
-Install frontend dependencies using:
-```bash
-npm install
-```
+### Development Tools
 
-### API Keys & Authentication
+The project uses **ESLint** with a flat configuration for code quality enforcement, supporting TypeScript and React. You'll also need **Git** for version control and repository cloning.
 
-The application requires the following credentials to function properly:
+<p>
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint">
+  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git">
+</p>
 
-- **OpenAI API Key**: Required for all LLM-based agent operations including code analysis, summarization, and documentation generation
-- **GitHub Personal Access Token**: Required for repository cloning operations to avoid rate limits and enable private repository access
+### Environment Setup
 
-These credentials should be configured in the backend's configuration system, typically through environment variables as defined in `backend/config.py`.
+1. **Clone the repository** and navigate into the project root.
+2. **Set up a Python virtual environment** using `python -m venv venv` and activate it.
+3. **Install backend dependencies** via `pip install -r backend/requirements.txt`.
+4. **Install frontend dependencies** via `npm install` (or `yarn install`).
+5. Ensure you have **OpenAI API credentials** configured in `backend/config.py` for LLM integration.
 
-### Development Setup
+> 💡 **Note**: The backend runs on port **8004** by default, and the frontend connects via WebSocket for real-time updates. Make sure ports 8004 and 5173 (Vite default) are available.
 
-The project consists of two separate applications that must be run independently:
-
-1. **Backend Service**: FastAPI application running on port 8004 with auto-reload
-2. **Frontend Application**: React application served by Vite development server
-
-Both applications must be started separately after installing their respective dependencies.
+All required technologies and tools are explicitly defined in the codebase. No additional assumptions are made beyond what is documented in the project files.
 
 ## Installation
 
-Follow these steps to set up and run the Dr. Document AI-powered GitHub documentation generator locally:
+Dr. Document is a full-stack AI-powered documentation generator with both a Python backend and React frontend. Follow these steps to set up the complete application on your local machine.
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
-- **Python 3.9+** (for backend services)
-- **Node.js 18+** (for frontend development and build tools)
-- **npm** or **yarn** (package manager for frontend dependencies)
-- **Git** (to clone repositories and manage version control)
+Ensure you have the following installed:
+- **Python 3.9+** (for the FastAPI backend)
+- **Node.js 18+** and **npm** (for the React frontend)
+- **Git** (for repository cloning and version control)
 
 ### Backend Setup
 
@@ -193,10 +203,13 @@ Ensure you have the following installed on your system:
    cd backend
    ```
 
-3. **Create and activate a virtual environment**:
+3. **Create and activate a Python virtual environment**:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
    ```
 
 4. **Install Python dependencies**:
@@ -205,475 +218,489 @@ Ensure you have the following installed on your system:
    ```
 
 5. **Configure environment variables**:
-   Create a `.env` file in the `backend` directory with the following content (adjust values as needed):
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   LOG_LEVEL=INFO
-   PORT=8004
-   ```
+   - Copy `.env.example` to `.env` (if available) and set your OpenAI API key and other configuration values.
+   - The `config.py` file defines required settings like `OPENAI_API_KEY`, `DATA_DIR`, and model parameters.
 
-6. **Start the FastAPI backend server**:
+6. **Run the backend server**:
    ```bash
    uvicorn main:app --reload --port 8004
    ```
-   The backend will be accessible at `http://localhost:8004`.
+   The backend will be available at `http://localhost:8004`.
 
 ### Frontend Setup
 
-1. **Navigate to the project root** (if still in `backend`):
+1. **Navigate to the project root**:
    ```bash
    cd ..
    ```
 
-2. **Install frontend dependencies**:
+2. **Install Node.js dependencies**:
    ```bash
    npm install
    ```
 
-3. **Start the Vite development server**:
+3. **Start the development server**:
    ```bash
    npm run dev
    ```
    The frontend will be available at `http://localhost:5173`.
 
-### Configuration Files
+### Configuration Notes
 
-The project uses several configuration files:
-- `backend/config.py`: Manages API keys, model settings, and storage paths via environment variables
-- `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`: TypeScript configurations for frontend and backend
-- `vite.config.ts`: Vite build configuration with React plugin
-- `eslint.config.js`: ESLint rules for TypeScript and React with React Refresh support
+- The backend uses **FastAPI** with **Uvicorn** for real-time updates via WebSocket.
+- The frontend uses **Vite**, **React 18**, and **TypeScript** with syntax highlighting for markdown rendering.
+- Both services communicate via REST API and WebSocket endpoints defined in `backend/main.py` and consumed by `src/api/client.ts`.
 
-### Running the Full Application
+> 💡 **Tip**: Use `npm run build` to create a production-ready frontend build, and ensure the backend is running before launching the frontend to avoid connection errors.
 
-Once both services are running:
-1. Open your browser to `http://localhost:5173`
-2. Use the repository input form to submit a GitHub URL
-3. Monitor real-time agent progress via WebSocket connections
-4. View generated documentation in the result display panel
-
-### Development Notes
-
-- The backend uses **FastAPI** with **Uvicorn** for real-time WebSocket communication
-- Frontend built with **React**, **TypeScript**, and **Vite**
-- Multi-agent workflow includes: codebase summarizer, requirements extractor, headings selector, section writer, and final reviewer
-- All components support hot-reload during development
-- Comprehensive logging system with color-coded output for debugging
-
-For detailed contribution guidelines and testing procedures, refer to `CONTRIBUTING.md`.
+Your Dr. Document instance is now ready for local development and testing!
 
 ## Quick Start
 
-Welcome to **Dr. Document** — an AI-powered GitHub documentation generator that automates the creation of comprehensive README files using a sophisticated 5-agent workflow system. This Quick Start guide will help you get the application running locally in just a few steps.
+Get up and running with Dr. Document in just a few steps! This AI-powered documentation generator analyzes GitHub repositories and generates comprehensive README files using a sophisticated multi-agent workflow.
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
-- **Python 3.10+** (for backend)
-- **Node.js 18+** (for frontend)
-- **npm** (comes with Node.js)
+Ensure you have the following installed:
+- Python 3.9+
+- Node.js 16+
+- npm or yarn
 
-### 1. Clone the Repository
+### Backend Setup
 
-```bash
-git clone https://github.com/H0NEYP0T-466/Dr.Document.git
-cd Dr.Document
-```
-
-### 2. Set Up the Backend
-
-Navigate to the `backend` directory and install dependencies:
-
+1. **Navigate to the backend directory and install dependencies:**
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-Configure your environment variables by creating a `.env` file (refer to `config.py` for required keys like `OPENAI_API_KEY`).
-
-Start the FastAPI server with auto-reload:
-
-```bash
-python run_commands.txt
-```
-
-This launches the backend on **port 8004** with WebSocket support for real-time updates.
-
-### 3. Set Up the Frontend
-
-In a new terminal, navigate to the project root and install frontend dependencies:
-
-```bash
-npm install
-```
-
-Start the Vite development server:
-
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173` (default Vite port).
-
-### 4. Use the Application
-
-1. Open your browser and go to `http://localhost:5173`
-2. Enter a valid GitHub repository URL (e.g., `https://github.com/owner/repo`)
-3. Submit the form to initiate the AI documentation generation process
-4. Watch real-time progress updates via WebSocket as agents analyze the codebase
-5. View the generated README with syntax-highlighted markdown preview
-6. Download or copy the final documentation
-
-The system uses a multi-agent workflow:
-- **Code Reader** analyzes source files
-- **Codebase Summarizer** creates file summaries
-- **Requirements Extractor** identifies project needs
-- **Section Writer** generates README content
-- **Final Reviewer** validates output quality
-
-All agent statuses and progress are displayed in real time through the responsive dashboard interface.
-
-### Next Steps
-
-For advanced usage, refer to:
-- `DEMO.md` for detailed examples and API usage
-- `CONTRIBUTING.md` for development setup and coding standards
-- `PROJECT_SUMMARY.md` for architectural overview
-
-The application features comprehensive logging, security audits, and supports LongCat AI integration for enhanced analysis capabilities.
-
-## Usage
-
-Dr. Document is an AI-powered GitHub documentation generator that automates the creation of comprehensive README files through a sophisticated multi-agent workflow. To begin using the application, start by setting up and running both the frontend and backend components.
-
-First, ensure you have all dependencies installed by running:
-
-```bash
-npm install
-```
-
-Then launch the development environment with:
-
-```bash
-npm run dev
-```
-
-This will start both the Vite-powered React frontend and the FastAPI backend with auto-reload capabilities.
-
-Once the application is running, you'll be presented with an intuitive interface featuring a repository input form where you can enter any GitHub repository URL. The system orchestrates seven AI agents in a sequential workflow that includes codebase summarization, requirements extraction, heading selection, section writing, manager review, final validation, and comprehensive documentation generation.
-
-As the agents process the repository, you'll see real-time updates through WebSocket connections that display agent status, progress bars, and current operations. Each agent card shows its individual progress and status, while the overall workflow progress is tracked at the top of the interface.
-
-The system automatically clones the repository, analyzes code files while excluding test directories and non-code files, and processes the codebase through specialized agents. You'll see live updates as agents generate summaries, extract requirements, select relevant documentation headings, and write structured content with badges and code examples.
-
-Once processing completes, the ResultDisplay component presents the generated README with syntax-highlighted markdown preview, repository statistics, and action buttons for copying, downloading, or resetting the workflow. The interface supports full-screen markdown viewing with professional formatting and responsive design.
-
-For advanced usage, you can interact with the backend API directly through the client module, which provides methods for job management, status checking, and real-time WebSocket connections. The comprehensive logging system provides detailed feedback throughout the documentation generation process, ensuring transparency in how each agent contributes to the final output.
-
-## API Endpoints
-
-The Dr. Document backend provides a comprehensive RESTful API built with FastAPI, enabling programmatic interaction with the multi-agent documentation generation system. All API endpoints are accessible under the `/api` prefix and support JSON request/response formats.
-
-### Repository Processing
-
-**`POST /api/process`**  
-Initiates a new documentation generation job for a GitHub repository. Accepts a JSON payload with the `repo_url` field containing the full GitHub repository URL. Returns a job ID immediately upon successful submission, which can be used to track progress and retrieve results.
-
-**`GET /api/status/{job_id}`**  
-Retrieves the current status and progress of a documentation generation job. Returns detailed information including overall progress percentage, current agent stage, agent-specific status updates, and timestamps for job creation and completion.
-
-### Results Retrieval
-
-**`GET /api/result/{job_id}`**  
-Fetches the generated documentation results for a completed job. Returns the full README content in Markdown format, repository statistics (stars, forks, etc.), and metadata about the generation process including agent execution times and final approval status.
-
-### Health & Monitoring
-
-**`GET /api/health`**  
-Provides basic health check information for the backend service, returning the service status, version information, and timestamp of the last check.
-
-### WebSocket Integration
-
-**`GET /api/ws/{job_id}`**  
-Establishes a WebSocket connection for real-time progress updates during documentation generation. Clients receive live status updates as each agent in the workflow completes its tasks, enabling real-time monitoring of the multi-agent process.
-
-All endpoints include proper error handling and return standardized JSON responses with appropriate HTTP status codes. The API supports CORS for frontend integration and includes comprehensive logging for debugging and monitoring purposes.
-
-## Configuration
-
-The Dr. Document application is configured through multiple layers of settings that control both backend behavior and frontend functionality. The primary configuration system is implemented in `backend/config.py`, which uses Pydantic models to manage application parameters with environment variable support.
-
-### Backend Configuration
-
-The `Config` class in `backend/config.py` defines all backend settings including:
-- **API Keys**: OpenAI integration requires `OPENAI_API_KEY` environment variable for LLM processing
-- **Model Settings**: Configurable LLM model selection and temperature parameters for agent workflows
-- **Storage Paths**: Directory configurations for temporary files, output storage, and cache management
-- **File Analysis Limits**: Maximum file sizes and directory exclusions for repository scanning
-- **WebSocket Settings**: Real-time update intervals and connection parameters
-- **Security Settings**: Rate limiting and request validation thresholds
-
-Environment variables are loaded automatically with sensible defaults, allowing deployment flexibility across development, testing, and production environments.
-
-### Frontend Configuration
-
-The React frontend uses Vite for build optimization with TypeScript support. Key configuration files include:
-
-- **TypeScript Configuration**: 
-  - `tsconfig.json` establishes workspace structure with separate configurations for app and Node.js environments
-  - `tsconfig.app.json` enables strict type checking for React components with ES2022 features
-  - `tsconfig.node.json` configures module resolution for Vite and Node.js compatibility
-
-- **Build Configuration**: 
-  - `vite.config.ts` sets up React plugin integration and development server settings
-  - `package.json` defines build scripts and dependency management
-
-### Environment Setup
-
-The application requires a virtual environment for Python dependencies managed through `backend/requirements.txt`, which includes FastAPI, OpenAI integration, WebSocket support, and utility libraries. The `backend/run_commands.txt` file provides the standard commands for activating the environment and launching the Uvicorn server on port 8004 with auto-reload functionality.
-
-All configuration values can be overridden through environment variables, making the application highly configurable for different deployment scenarios while maintaining sensible defaults for local development.
-
-## Environment Variables
-
-The Dr. Document application relies on several critical environment variables to configure its AI-powered backend functionality and ensure secure operation. These variables are primarily managed through the `backend/config.py` file, which uses Pydantic's `BaseSettings` to load and validate configuration from environment variables at runtime.
-
-### Required API Keys
-
-The application requires OpenAI API integration for its multi-agent workflow system. You must set the following environment variable:
-
-- **`OPENAI_API_KEY`**: This is essential for all LLM-based agent operations including code analysis, documentation generation, and review processes. Without this key, the backend will fail to initialize and agent tasks cannot be executed.
-
-### Application Configuration
-
-Additional configuration parameters are controlled via environment variables:
-
-- **`LOG_LEVEL`**: Controls the verbosity of logging output from the backend services. Accepts standard logging levels such as `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. This is used by the comprehensive logging system defined in `backend/logger.py`.
-
-- **`MAX_FILE_SIZE_MB`**: Sets the maximum file size (in megabytes) that the GitHub client (`backend/github_client.py`) will process during repository analysis. This prevents processing of excessively large files and is used by the file scanning utilities.
-
-- **`STORAGE_PATH`**: Defines the directory path where processed repositories and generated documentation are temporarily stored during workflow execution. This path is used by the repository cloning and file management components.
-
-### Security and Operational Settings
-
-- **`ALLOWED_ORIGINS`**: Configures CORS settings for the FastAPI backend running on port 8004. This should be set to the frontend origin (e.g., `http://localhost:5173`) to allow secure cross-origin requests from the React frontend.
-
-All environment variables are validated at application startup through the configuration system in `backend/config.py`. Missing required variables will cause the application to fail initialization. The configuration supports both development and production environments, with sensible defaults provided for optional parameters.
-
-For local development, create a `.env` file in the project root and set your environment variables accordingly. The backend will automatically load these values when started via the commands in `backend/run_commands.txt`.
-
-## Project Structure
-
-The Dr. Document project follows a well-organized monorepo structure with a clear separation between frontend and backend components, optimized for a modern full-stack AI-powered documentation generation system.
-
-### Frontend (React + TypeScript + Vite)
-
-The frontend is built using **React** with **TypeScript** and powered by **Vite** as the build tool. It resides in the `src/` directory and includes:
-
-- **`src/main.tsx`**: Application entry point that initializes React with StrictMode and renders the main `App` component.
-- **`src/App.tsx`**: Root component managing repository input, real-time agent status updates via WebSocket, and orchestrating UI state across interconnected components.
-- **`src/components/`**: Contains all React components:
-  - `AgentWorkspace.tsx`: Dashboard displaying agent progress and status in a grid layout.
-  - `AgentCard.tsx`: Individual agent status card with progress bars and state indicators.
-  - `RepoInput.tsx`: Form component for submitting GitHub repository URLs.
-  - `ResultDisplay.tsx`: Final documentation output viewer with markdown preview, copy/download, and reset functionality.
-- **`src/types/index.ts`**: Central TypeScript type definitions for agents, workflows, and application state.
-- **`src/App.css` & `src/index.css`**: Global and component-specific styling with dark theme, gradients, and responsive design.
-- **`src/components/*.css`**: Modular CSS files for each component, supporting hover effects and animations.
-
-The frontend communicates with the backend via REST and WebSocket APIs, providing real-time updates during documentation generation.
-
-### Backend (FastAPI + Python)
-
-The backend is implemented using **FastAPI** and **Python**, located in the `backend/` directory:
-
-- **`backend/main.py`**: Main FastAPI application entry point with WebSocket support, job management, and RESTful endpoints.
-- **`backend/config.py`**: Pydantic-based configuration management with environment variables for API keys, models, and storage paths.
-- **`backend/workflow.py`**: Orchestrates the 5-agent asynchronous documentation generation workflow.
-- **`backend/agents/`**: Contains all AI agents:
-  - `codebase_summarizer.py`: Generates file summaries.
-  - `code_reader.py`: Analyzes code files for functions, classes, and dependencies.
-  - `requirements_extractor.py`: Identifies functional and technical requirements.
-  - `headings_selector.py`: Selects relevant README headings.
-  - `section_writer.py`: Writes individual documentation sections.
-  - `readme_writer.py`: Compiles final README content.
-  - `manager.py`: Reviews and approves sections with feedback.
-  - `final_reviewer.py`: Performs final validation of generated documentation.
-- **`backend/github_client.py`**: Handles GitHub repository cloning and file scanning.
-- **`backend/logger.py`**: Comprehensive logging system with color-coded output and file support.
-- **`backend/agents/base_agent.py`**: Abstract base class providing LLM integration and standardized agent interface.
-- **`backend/requirements.txt`**: Python dependencies including FastAPI, OpenAI, and WebSocket support.
-
-### Configuration & Tooling
-
-- **`package.json` & `package-lock.json`**: Frontend dependencies including Vite, React, TypeScript, ESLint, and Markdown rendering libraries.
-- **`tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`**: TypeScript configurations for frontend and Node.js environments.
-- **`vite.config.ts`**: Vite build configuration with React plugin.
-- **`eslint.config.js`**: ESLint setup with React Hooks and Refresh support.
-- **`backend/run_commands.txt`**: Commands to activate virtual environment and run Uvicorn server on port 8004.
-
-This structure enables modular development, clear separation of concerns, and scalable AI agent orchestration for automated GitHub documentation generation.
-
-## Development
-
-### Project Setup and Configuration
-
-The Dr. Document project uses a modern full-stack architecture with a **FastAPI backend** and a **React/TypeScript frontend** built with Vite. To get started, ensure you have Python 3.9+ and Node.js installed.
-
-#### Backend Setup
-1. Navigate to the `backend` directory
-2. Create and activate a virtual environment using the commands in `run_commands.txt`
-3. Install dependencies with `pip install -r requirements.txt`
-4. Configure environment variables by copying `.env.example` to `.env` (refer to `config.py` for required variables like `OPENAI_API_KEY`)
-
-#### Frontend Setup
-1. Install dependencies with `npm install`
-2. The project uses TypeScript with strict type checking enabled in `tsconfig.app.json`
-3. ESLint is configured with React Hooks and Refresh support via `eslint.config.js`
-
-### Key Technologies
-
-- **Backend**: FastAPI with WebSocket support, OpenAI integration, and Pydantic configuration
-- **Frontend**: React with TypeScript, Vite build tool, and Markdown rendering
-- **Agents**: Six specialized AI agents including `CodebaseSummarizerAgent`, `HeadingsSelectorAgent`, `SectionWriterAgent`, `ManagerAgent`, `FinalReviewerAgent`, and `RequirementsExtractorAgent`
-
-### Development Workflow
-
-The application features a **multi-agent documentation generation system** orchestrated through `workflow.py`. Each agent processes specific aspects of repository analysis:
-
-```python
-# Example agent workflow
-workflow = [
-    CodebaseSummarizerAgent,
-    HeadingsSelectorAgent,
-    SectionWriterAgent,
-    ManagerAgent,
-    FinalReviewerAgent,
-    RequirementsExtractorAgent
-]
-```
-
-Real-time progress tracking is implemented via WebSocket connections using the `api/client.ts` client, providing live updates on agent status and overall progress.
-
-### Configuration Files
-
-The project uses a workspace structure with separate TypeScript configurations:
-- `tsconfig.app.json` for React application compilation
-- `tsconfig.node.json` for Node.js/Vite tooling
-- `vite.config.ts` for frontend build configuration
-
-### Running the Application
-
-Start the backend server:
+2. **Start the FastAPI server:**
 ```bash
 uvicorn main:app --reload --port 8004
 ```
 
-Start the frontend development server:
+The FastAPI server will start on `http://localhost:8004`, providing REST and WebSocket endpoints for repository processing, job status tracking, and real-time updates.
+
+### Frontend Setup
+
+1. **Install frontend dependencies:**
+```bash
+npm install
+```
+
+2. **Start the development server:**
 ```bash
 npm run dev
 ```
 
-The frontend connects to the backend via WebSocket on port 8004, providing real-time updates during documentation generation workflows.
+The React application will be available at `http://localhost:5173` (default Vite port).
 
-## Contributing
+### Using Dr. Document
 
-Welcome to the Dr. Document project! We're excited to have you contribute to our AI-powered GitHub documentation generator. This guide will help you get started with development, testing, and contributing to both the backend and frontend components.
+1. **Open the application** in your browser at `http://localhost:5173`
+2. **Enter a GitHub repository URL** in the repository input field
+3. **Submit the request** to start the documentation generation process
+4. **Monitor progress** through the real-time agent workspace showing each agent's status and progress
+5. **View results** once completed, with options to copy or download the generated README
 
-### 🚀 Getting Started
+The system uses a 5-agent workflow including Code Reader, Codebase Summarizer, Requirements Extractor, Section Writer, and Final Reviewer, with Manager oversight to ensure quality documentation.
 
-**Prerequisites:**
-- Python 3.8+ for backend development
-- Node.js 16+ and npm for frontend development
-- Git for version control
+### API Usage
 
-**Setup:**
-1. Clone the repository and navigate to the project root
-2. Backend setup:
+You can also interact directly with the backend API:
+
+```bash
+curl -X POST http://localhost:8004/process \
+  -H "Content-Type: application/json" \
+  -d '{"repo_url": "https://github.com/user/repo"}'
+```
+
+The API supports WebSocket connections for real-time status updates during the documentation generation process.
+
+### Configuration
+
+Configure API keys and model settings in `backend/config.py`. The application supports OpenAI integration and can be customized for different LLM providers.
+
+For detailed usage examples and advanced features, see the [DEMO.md](DEMO.md) file in the repository root.
+
+## Usage
+
+### Prerequisites
+
+Before using Dr. Document, ensure you have the following installed:
+- **Python 3.10+** for the backend services
+- **Node.js 18+** and **npm** for the frontend application
+- **Git** for repository cloning functionality
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/H0NEYP0T-466/Dr.Document.git
+   cd Dr.Document
+   ```
+
+2. **Install backend dependencies:**
    ```bash
    cd backend
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
-3. Frontend setup:
+
+3. **Install frontend dependencies:**
    ```bash
+   cd ../
    npm install
    ```
 
-### 🏗️ Project Structure
+### Running the Application
+
+#### Development Mode
+
+Start both the backend and frontend servers simultaneously:
+
+```bash
+# Terminal 1 - Backend
+cd backend
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+uvicorn main:app --reload --port 8004
+
+# Terminal 2 - Frontend
+npm run dev
+```
+
+The application will be accessible at `http://localhost:5173` with the backend running on port `8004`.
+
+#### Production Build
+
+Build and preview the production application:
+
+```bash
+# Build frontend
+npm run build
+
+# Preview frontend
+npm run preview
+
+# Run backend (from backend directory)
+cd backend
+source venv/bin/activate
+uvicorn main:app --host 0.0.0.0 --port 8004
+```
+
+### Using Dr. Document
+
+1. **Access the Web Interface:**
+   Open your browser and navigate to `http://localhost:5173`
+
+2. **Submit a Repository:**
+   - Enter a GitHub repository URL in the provided input field
+   - Click "Process Repository" to start the documentation generation workflow
+
+3. **Monitor Progress:**
+   - The interface displays real-time status updates via WebSocket connections
+   - View individual agent progress through the multi-agent workflow
+   - Track overall completion status with animated progress indicators
+
+4. **View Results:**
+   - Once complete, the generated README documentation will be displayed
+   - Download the documentation or copy it to your clipboard
+   - Review repository statistics and analysis results
+
+### API Usage
+
+The backend provides RESTful APIs for programmatic access:
+
+```bash
+# Process a repository
+curl -X POST http://localhost:8004/process \
+  -H "Content-Type: application/json" \
+  -d '{"repo_url": "https://github.com/username/repository"}'
+
+# Check job status
+curl http://localhost:8004/status/{job_id}
+
+# Get results
+curl http://localhost:8004/results/{job_id}
+```
+
+### Configuration
+
+Configure the application by setting environment variables or modifying `backend/config.py`:
+
+- **API Keys:** Set OpenAI API keys and other service credentials
+- **Model Settings:** Configure LLM parameters and behavior
+- **Storage Paths:** Define where generated documentation and analysis files are stored
+- **File Limits:** Set maximum file sizes and analysis limits
+
+The system includes comprehensive logging and error handling, with detailed logs available in the backend console and log files.
+
+## API Endpoints
+
+The Dr. Document backend exposes a comprehensive set of REST and WebSocket endpoints through its FastAPI application to manage repository processing, workflow orchestration, and real-time status updates.
+
+### Core REST Endpoints
+
+- **`POST /api/process`** – Initiates a new documentation generation job by accepting a GitHub repository URL. The endpoint validates the input, creates a unique job ID, and starts the multi-agent workflow asynchronously. Returns a `job_id` for tracking progress.
+
+- **`GET /api/status/{job_id}`** – Retrieves the current status and progress of a running or completed job. Returns structured data including overall progress percentage, agent-specific statuses, and timestamps.
+
+- **`GET /api/result/{job_id}`** – Fetches the final generated documentation (README content) and metadata (e.g., file counts, processing stats) once the job is complete. Returns the full markdown content and repository statistics.
+
+- **`GET /api/health`** – Provides a simple health check endpoint to verify the backend service is operational. Returns `{"status": "healthy"}` when the application is running correctly.
+
+### Real-Time Updates via WebSocket
+
+- **`WebSocket /api/ws/{job_id}`** – Enables real-time bidirectional communication for live updates during job execution. Clients can subscribe to a specific job to receive streaming updates on agent progress, status messages, and intermediate results as they are generated by the workflow agents.
+
+### Agent and Workflow Internals
+
+Internally, the system orchestrates a 5-agent workflow (`CodeReaderAgent`, `CodebaseSummarizerAgent`, `RequirementsExtractorAgent`, `SectionWriterAgent`, `ReadmeWriterAgent`, plus `ManagerAgent` and `FinalReviewerAgent`) that processes the repository in stages. Each agent contributes to incremental documentation generation, with the `ManagerAgent` reviewing sections and providing feedback. The `FinalReviewerAgent` ensures completeness before finalizing the README.
+
+All endpoints are secured via environment-based configuration (e.g., API keys in `config.py`) and integrate with GitHub cloning via `github_client.py`. The workflow is managed by `workflow.py`, which coordinates agent execution, status tracking, and result storage.
+
+## Configuration
+
+The Dr. Document project supports comprehensive configuration management for both the frontend and backend components, enabling flexible deployment and customization.
+
+### Backend Configuration
+
+The backend configuration is centrally managed through `backend/config.py`, which implements a Pydantic-based configuration class. This class handles:
+
+- **API Keys Management**: Secure handling of OpenAI API credentials and other service integrations
+- **Model Settings**: Configuration of LLM parameters including temperature, max tokens, and model selection
+- **Storage Paths**: Definition of directories for temporary files, outputs, and cache management
+- **File Analysis Limits**: Size and type restrictions for repository processing
+- **Environment Variables**: Integration with system environment for sensitive data
+
+The configuration system supports environment-based overrides, allowing different settings for development, testing, and production environments.
+
+### Frontend Configuration
+
+The React frontend is configured through multiple TypeScript configuration files:
+
+- **tsconfig.json**: Main configuration with multi-root structure supporting both app and node environments
+- **tsconfig.app.json**: React-specific settings with strict type checking, ES2022 features, and JSX transformation
+- **tsconfig.node.json**: Node.js optimized configuration for backend tooling and Vite integration
+
+Vite configuration is handled through `vite.config.ts`, which sets up the React plugin and development server settings.
+
+### Package Management
+
+Both frontend and backend dependencies are managed through:
+
+- **package.json**: Defines React-based project dependencies including Vite, TypeScript, ESLint, and syntax highlighting libraries
+- **backend/requirements.txt**: Specifies Python dependencies for FastAPI, OpenAI integration, Git operations, and utilities
+- **package-lock.json**: Locks dependency versions for reproducible builds
+
+### Development Environment Setup
+
+The project includes comprehensive setup instructions in `CONTRIBUTING.md`, detailing:
+
+- Virtual environment activation and dependency installation
+- Development server configuration with auto-reload on port 8004
+- Logging system configuration with color-coded output
+- Testing procedures for both frontend and backend components
+
+The configuration system supports hot-reloading during development and maintains production-ready settings through environment variable management.
+
+## Environment Variables
+
+The Dr. Document application relies on several environment variables to configure its behavior, primarily through the backend configuration system. The most critical configuration is handled via the `backend/config.py` file, which uses Pydantic to manage API keys, model settings, and storage paths.
+
+### Required Environment Variables
+
+**OpenAI API Configuration**
+- `OPENAI_API_KEY`: Required for LLM-based agent operations. This key is used by all agents including `codebase_summarizer.py`, `code_reader.py`, `requirements_extractor.py`, and others that perform AI analysis of codebases.
+- `OPENAI_MODEL`: Specifies the OpenAI model to use (defaults to `gpt-4o` based on typical FastAPI configurations).
+
+**GitHub Integration**
+- `GITHUB_TOKEN`: Required for repository cloning and file access through the `github_client.py` module. This token must have appropriate permissions to clone public repositories.
+
+**Storage and File Management**
+- `MAX_FILE_SIZE`: Controls file analysis limits (defaults to 10MB based on common FastAPI file handling patterns).
+- `WORKING_DIR`: Specifies the directory for temporary file storage during processing.
+- `OUTPUT_DIR`: Defines where generated documentation files are stored.
+
+**Application Settings**
+- `LOG_LEVEL`: Controls logging verbosity (defaults to `INFO` based on the comprehensive logging system in `logger.py`).
+- `PORT`: Sets the backend server port (defaults to `8004` as specified in `run_commands.txt`).
+- `HOST`: Defines the server host binding (typically `0.0.0.0` for production).
+
+### Configuration Management
+
+The `backend/config.py` file implements a centralized configuration system that:
+- Validates required environment variables
+- Provides sensible defaults for optional settings
+- Manages API key security and model selection
+- Controls file processing limits and storage paths
+
+### Development vs Production
+
+For development, you can use a `.env` file (though not explicitly shown in the codebase, this is standard practice with Pydantic settings). In production, these variables should be set in your deployment environment.
+
+### Security Considerations
+
+As documented in `SECURITY_AUDIT.md`, ensure that sensitive API keys are never committed to version control. The configuration system is designed to read these from environment variables only, preventing accidental exposure of credentials.
+
+All environment variables are validated at application startup, and missing required variables will cause the application to fail to start, ensuring that critical configuration issues are caught early.
+
+## Project Structure
+
+The Dr. Document project follows a well-organized, full-stack architecture with a clear separation between the React frontend and Python FastAPI backend. The structure is designed to support a multi-agent AI system that generates comprehensive documentation for GitHub repositories.
+
+### Frontend Structure
+
+The frontend is built with **React 18** and **TypeScript**, using **Vite** as the build tool. The main entry point is `src/main.tsx`, which renders the `App` component within `StrictMode`. The application uses a component-based architecture with:
+
+- **Core Components**: `App.tsx` orchestrates the main workflow, `AgentWorkspace.tsx` displays the multi-agent interface, `AgentCard.tsx` renders individual agent status, `RepoInput.tsx` handles repository URL input, and `ResultDisplay.tsx` shows generated documentation with copy/download functionality.
+- **Styling**: CSS files are organized by component (`AgentCard.css`, `AgentWorkspace.css`, etc.) and global styles are defined in `src/index.css` with a dark theme featuring gradient backgrounds and custom scrollbars.
+- **Type Definitions**: `src/types/index.ts` centralizes TypeScript interfaces for agents, workflow state, and static configurations.
+- **Development Tools**: ESLint configuration (`eslint.config.js`) supports TypeScript, React, and React Hooks with flat config format, and TypeScript configurations are split between `tsconfig.app.json` (React app) and `tsconfig.node.json` (Node.js environment).
+
+### Backend Structure
+
+The backend is powered by **FastAPI** and **Python 3.11+**, implementing a sophisticated multi-agent system for documentation generation. The structure includes:
+
+- **Core Application**: `backend/main.py` serves as the FastAPI entry point with REST and WebSocket endpoints for job management and real-time updates.
+- **Configuration**: `backend/config.py` uses Pydantic for environment variable management, API keys, model settings, and storage paths.
+- **Multi-Agent System**: The `backend/agents/` directory contains specialized agents:
+  - `codebase_summarizer.py`: Generates file summaries
+  - `code_reader.py`: Analyzes code files for functions and classes
+  - `requirements_extractor.py`: Identifies functional and technical requirements
+  - `section_writer.py`: Creates README sections with badges and examples
+  - `readme_writer.py`: Generates complete README.md files
+  - `headings_selector.py`: Recommends logical section ordering
+  - `manager.py`: Reviews content quality and provides feedback
+  - `final_reviewer.py`: Validates completeness and accuracy
+  - `base_agent.py`: Abstract base class with LLM integration and logging
+- **Infrastructure**: `backend/github_client.py` handles repository cloning and file scanning, while `backend/logger.py` provides color-coded logging with emoji support. The workflow orchestration is managed through `backend/workflow.py`.
+
+### Development & Configuration
+
+The project uses modern development practices with:
+- **Dependency Management**: `requirements.txt` for Python packages and `package.json` for frontend dependencies
+- **Build Configuration**: Vite configuration in `vite.config.ts` and TypeScript configurations for different environments
+- **Documentation**: Comprehensive guides in `CONTRIBUTING.md`, `DEMO.md`, and `PROJECT_SUMMARY.md`
+- **Security**: `SECURITY_AUDIT.md` confirms production-ready security standards
+- **Testing**: `backend/test_components.py` verifies core functionality
+
+This structure enables the AI-powered documentation generator to process repositories through a coordinated 5-agent workflow, with real-time status updates via WebSocket and a responsive React interface for users.
+
+## Development
+
+Welcome to the development section of Dr. Document! This project is a full-stack AI-powered documentation generator built with modern web technologies and a sophisticated multi-agent workflow system.
+
+### Project Structure
+
+The repository follows a clear separation between frontend and backend components:
+
+- **Frontend**: Built with React 18, TypeScript, and Vite, featuring a dark-themed UI with real-time updates via WebSocket
+- **Backend**: Powered by FastAPI and Python, implementing a 5-agent workflow system for automated documentation generation
+
+### Getting Started
+
+To begin development, first set up the backend environment:
+
+```bash
+# Activate virtual environment and run backend
+source backend/run_commands.txt
+```
+
+For frontend development:
+
+```bash
+# Install dependencies and start development server
+npm install
+npm run dev
+```
+
+### Key Development Features
+
+The project implements a comprehensive multi-agent system where specialized AI agents collaborate to generate documentation:
+
+- **Code Analysis**: Agents analyze codebases, extract requirements, and generate summaries
+- **Real-time Updates**: WebSocket integration provides live progress tracking
+- **Type Safety**: Full TypeScript implementation with strict type checking
+- **Modern Tooling**: ESLint configuration with React and TypeScript support
+
+### Configuration
+
+The application uses Pydantic-based configuration management (`backend/config.py`) for environment variables and API keys. The frontend connects to the backend via the API client (`src/api/client.ts`) which handles repository processing, status tracking, and result retrieval.
+
+### Development Workflow
+
+1. Start the backend server with auto-reload enabled on port 8004
+2. Launch the Vite development server for the React frontend
+3. The system supports hot-reload for both frontend and backend changes
+4. Real-time agent progress is displayed through the AgentWorkspace component
+
+The project includes comprehensive logging (`backend/logger.py`) and a detailed contribution guide (`CONTRIBUTING.md`) to help new developers get started with the codebase.
+
+## Contributing
+
+Welcome to the Dr. Document project! We appreciate your interest in contributing to this AI-powered GitHub documentation generator. This guide will help you get started with development, testing, and submitting contributions.
+
+### Development Setup
+
+To set up the development environment:
+
+1. **Frontend Setup**: 
+   - Install dependencies with `npm install`
+   - Run the development server with `npm run dev`
+   - The React application uses Vite, TypeScript, and React 18 with StrictMode
+
+2. **Backend Setup**:
+   - Create a Python virtual environment and install dependencies from `backend/requirements.txt`
+   - Start the FastAPI server with auto-reload on port 8004 using commands from `backend/run_commands.txt`
+   - The backend uses FastAPI with Uvicorn and provides REST and WebSocket endpoints
+
+### Project Structure
 
 The project follows a clear separation between frontend and backend:
 
-- **Frontend** (`src/`): React + TypeScript application with Vite build tool
-- **Backend** (`backend/`): FastAPI service with WebSocket support and multi-agent workflow
-- **Configuration**: TypeScript configs in `tsconfig.*.json`, ESLint in `eslint.config.js`
+- **Frontend** (`src/`): React components with TypeScript, including `App.tsx` as the main orchestrator, `AgentWorkspace.tsx` for agent visualization, `RepoInput.tsx` for repository input, and `ResultDisplay.tsx` for documentation output
+- **Backend** (`backend/`): FastAPI application with modular agent system including `codebase_summarizer.py`, `code_reader.py`, `requirements_extractor.py`, `section_writer.py`, `readme_writer.py`, and workflow orchestration in `workflow.py`
 
-### 🔧 Development Workflow
+### Coding Standards
 
-**Running the Application:**
-- Start backend: `cd backend && uvicorn main:app --reload --port 8004`
-- Start frontend: `npm run dev`
-- Both services communicate via REST API and WebSocket connections
+- **Frontend**: Follow React best practices with TypeScript interfaces defined in `src/types/index.ts`. Use the established component patterns and CSS modules for styling
+- **Backend**: Implement agents by extending the `BaseAgent` abstract class from `backend/agents/base_agent.py`. Follow the established logging patterns using the color-coded logger from `backend/logger.py`
 
-**Code Standards:**
-- Follow TypeScript strict typing patterns in frontend
-- Use Pydantic models for backend data validation
-- Implement comprehensive logging using the custom logger system
-- Write unit tests for new agent functionality
+### Testing
 
-### 🤖 Contributing to Agents
+Before submitting changes:
 
-The project features a sophisticated multi-agent system. When adding new agents:
+1. Run backend component tests with `python backend/test_components.py`
+2. Ensure all ESLint rules pass with `npm run lint`
+3. Verify the application builds successfully with `npm run build`
 
-1. **Extend BaseAgent**: All agents inherit from `base_agent.py`
-2. **Follow the workflow**: New agents should integrate with the existing workflow orchestration
-3. **Add proper logging**: Use the established logging patterns
-4. **Test imports**: Verify your agent works with the existing test suite
+### Pull Requests
 
-### 🧪 Testing
+When submitting a PR:
 
-**Backend Testing:**
-- Run `python backend/test_components.py` to verify imports and basic functionality
-- Test agent workflows using the existing test patterns
-- Ensure all new code follows the established patterns
+- Include clear descriptions of changes and their purpose
+- Reference any related issues
+- Ensure all tests pass
+- Follow the established code patterns and conventions
 
-**Frontend Testing:**
-- Use the existing ESLint configuration for code quality
-- Follow React component patterns established in existing components
-- Test WebSocket connections and real-time updates
+### Documentation
 
-### 📝 Documentation
+The project includes comprehensive documentation:
+- `PROJECT_SUMMARY.md` - Overview of the multi-agent AI system
+- `DEMO.md` - Interactive examples and API usage guide
+- `SECURITY_AUDIT.md` - Security review documentation
 
-When contributing:
-- Update relevant documentation files
-- Include examples in `DEMO.md` for new features
-- Ensure `PROJECT_SUMMARY.md` reflects current capabilities
-- Add security considerations to `SECURITY_AUDIT.md` for new features
-
-### 🔒 Security Considerations
-
-All contributions must maintain security standards:
-- Follow the patterns established in `SECURITY_AUDIT.md`
-- Validate all inputs using the existing validation patterns
-- Implement proper error handling without exposing sensitive information
-
-### 🎯 Pull Requests
-
-Before submitting a PR:
-1. Ensure all tests pass
-2. Follow the established coding standards
-3. Update documentation as needed
-4. Include examples of how your changes work
-5. Reference any related issues
-
-Thank you for contributing to Dr. Document! Your efforts help make automated documentation generation more powerful and accessible.
+Thank you for contributing to Dr. Document! Your help makes this AI-powered documentation generator better for everyone.
 
 ## License
 
-This project is licensed under the **MIT License**. The full license text is reproduced below:
+This project, **Dr. Document**, is licensed under the **MIT License** — a permissive open-source software license that allows free use, modification, distribution, and private use of the software, provided the original copyright notice and license text are included in all copies or substantial portions of the work.
 
-```
+### 📄 License Text
+
+```text
 MIT License
 
 Copyright (c) 2024 H0NEYP0T-466
@@ -697,36 +724,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### Key Terms of the MIT License
+### 🔍 Key Terms of the MIT License
 
-- **Permissive Use**: You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this software without restriction, provided you include the original copyright and license notice in all copies or substantial portions of the software.
-- **No Warranty**: The software is provided "as is", without warranty of any kind—express or implied—including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.
-- **Attribution Required**: Any redistribution must retain the original copyright notice and the full MIT license text.
+- **Free Use**: You are free to use this software for any purpose, including commercial applications.
+- **Modification & Distribution**: You may modify the source code and distribute your modified versions.
+- **Attribution Required**: All copies or significant portions of the software must include the original copyright notice and the full MIT License text.
+- **No Warranty**: The software is provided "as is" without any warranty — the authors are not liable for damages arising from its use.
 
-### Applicability
+### 📦 Applicability
 
-This license applies to all source files in the repository, including:
+The MIT License applies to all files in this repository, including but not limited to:
 
-- **Backend Components**: FastAPI application (`backend/main.py`), agent classes (e.g., `codebase_summarizer.py`, `readme_writer.py`), workflow orchestration (`workflow.py`), and configuration (`config.py`).
-- **Frontend Components**: React application (`src/App.tsx`, `src/components/AgentWorkspace.tsx`, etc.), TypeScript interfaces (`src/types/index.ts`), and styling files.
-- **Configuration & Tooling**: `tsconfig.json`, `vite.config.ts`, `eslint.config.js`, `package.json`, and `requirements.txt`.
-- **Documentation**: All markdown files such as `README.md`, `CONTRIBUTING.md`, `DEMO.md`, and `PROJECT_SUMMARY.md`.
+- **Backend Components**: Python modules in `backend/`, such as `main.py`, `workflow.py`, `agents/`, `config.py`, and `logger.py`.
+- **Frontend Components**: React-based UI files in `src/`, including `App.tsx`, `AgentWorkspace.tsx`, `AgentCard.tsx`, and `ResultDisplay.tsx`.
+- **Configuration & Build Files**: `package.json`, `tsconfig.json`, `vite.config.ts`, `eslint.config.js`, and `requirements.txt`.
+- **Documentation & Guides**: `README.md`, `CONTRIBUTING.md`, `DEMO.md`, and `PROJECT_SUMMARY.md`.
 
-### Third-Party Dependencies
+### 🛡️ Compliance
 
-The project relies on several open-source libraries, including:
+To comply with this license:
 
-- **Python**: FastAPI, Uvicorn, OpenAI SDK, Pydantic, and asyncio for backend functionality.
-- **TypeScript/React**: React, Vite, TypeScript, ESLint, and syntax highlighting libraries for the frontend.
-- **Other Utilities**: WebSocket support, logging, and file handling tools.
+1. **Include the License File**: Distribute a copy of this `LICENSE` file with your project.
+2. **Preserve Copyright Notice**: Retain the original copyright line:  
+   `Copyright (c) 2024 H0NEYP0T-466`
+3. **No Additional Restrictions**: Do not apply further restrictions beyond the terms of the MIT License.
 
-These dependencies are subject to their respective licenses (e.g., MIT, Apache-2.0, BSD). The project maintains compliance by including appropriate license notices in `package.json` and `requirements.txt`.
+### 🌐 Use in Derivative Works
 
-### Commercial and Modification Rights
+If you build upon Dr. Document — whether for internal tools, open-source contributions, or commercial products — you are encouraged to credit the original authors and maintain the open nature of your derivative work under the same or compatible license.
 
-You may use this software for commercial purposes. Modifications are permitted and encouraged, especially for internal or public distribution, as long as the license terms are preserved.
+---
 
-For questions about licensing, please open an issue or contact the maintainers via the repository’s issue tracker.
+**Dr. Document** leverages modern AI agents, real-time WebSocket updates, and a robust full-stack architecture. Its open licensing supports innovation, collaboration, and widespread adoption in the developer community.
 
 ---
 
