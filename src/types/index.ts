@@ -53,5 +53,47 @@ export const AGENT_DEFINITIONS: Omit<Agent, 'status' | 'progress' | 'result'>[] 
     emoji: '🔍',
     description: 'Validating the complete README and approving the final output',
   },
+  {
+    id: 'community_license',
+    name: 'LICENSE',
+    emoji: '📄',
+    description: 'Generating MIT License file',
+  },
+  {
+    id: 'community_contributing_md',
+    name: 'CONTRIBUTING.md',
+    emoji: '📄',
+    description: 'Generating contribution guidelines',
+  },
+  {
+    id: 'community_code_of_conduct_md',
+    name: 'CODE_OF_CONDUCT.md',
+    emoji: '📄',
+    description: 'Generating code of conduct',
+  },
+  {
+    id: 'community_security_md',
+    name: 'SECURITY.md',
+    emoji: '📄',
+    description: 'Generating security policy',
+  },
+  {
+    id: 'community_support_md',
+    name: 'SUPPORT.md',
+    emoji: '📄',
+    description: 'Generating support guide',
+  },
+  {
+    id: 'community_codeowners',
+    name: 'CODEOWNERS',
+    emoji: '📄',
+    description: 'Generating code ownership file',
+  },
+  {
+    id: 'community_final_reviewer',
+    name: 'Community Final Reviewer',
+    emoji: '🔍',
+    description: 'Validating all community health files',
+  },
 ];
 
