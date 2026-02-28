@@ -12,10 +12,9 @@
 .repo-input-header h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
+  background: none;
+  -webkit-text-fill-color: #ffffff;
 }
 
 .subtitle {
@@ -38,17 +37,17 @@
   flex: 1;
   padding: 1rem 1.5rem;
   font-size: 1rem;
-  border: 2px solid #333;
+  border: 1px solid #1a1a1a;
   border-radius: 12px;
-  background: #1a1a1a;
+  background: #0d0d0d;
   color: #fff;
   transition: all 0.3s ease;
 }
 
 .repo-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #444;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
 }
 
 .repo-input.error {
@@ -64,9 +63,9 @@
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  border: none;
+  border: 1px solid #333;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #111;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -75,7 +74,8 @@
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: #1a1a1a;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 .submit-button:active:not(:disabled) {

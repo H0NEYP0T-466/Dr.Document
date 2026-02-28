@@ -13,8 +13,8 @@
 
 .error-content {
   max-width: 600px;
-  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
-  border: 2px solid #ef4444;
+  background: #0d0d0d;
+  border: 1px solid #3a1a1a;
   border-radius: 16px;
   padding: 3rem;
   text-align: center;
@@ -37,9 +37,9 @@
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  border: none;
+  border: 1px solid #333;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #111;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -47,5 +47,6 @@
 
 .error-content .reset-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: #1a1a1a;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }

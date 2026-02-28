@@ -21,11 +21,17 @@ export interface StatusResponse {
   message: string;
 }
 
+export interface CommunityFile {
+  filename: string;
+  content: string;
+}
+
 export interface ResultResponse {
   job_id: string;
   repo_name: string;
   repo_url: string;
   readme: string;
+  community_files: CommunityFile[];
   files_analyzed: number;
   headings: string[];
   final_review: {

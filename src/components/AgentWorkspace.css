@@ -12,10 +12,9 @@
 .workspace-header h2 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
+  background: none;
+  -webkit-text-fill-color: #ffffff;
 }
 
 .workspace-subtitle {
@@ -27,8 +26,8 @@
 .overall-progress {
   max-width: 600px;
   margin: 2rem auto 0;
-  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
-  border: 2px solid #333;
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
   border-radius: 16px;
   padding: 1.5rem;
 }
@@ -49,15 +48,12 @@
 .progress-percentage {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
 }
 
 .progress-bar-large {
   height: 16px;
-  background: #1a1a1a;
+  background: #0a0a0a;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -65,7 +61,7 @@
 
 .progress-fill-large {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   transition: width 0.5s ease;
   border-radius: 8px;
   position: relative;

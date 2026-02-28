@@ -11,6 +11,14 @@ from backend.agents.headings_selector import HeadingsSelectorAgent
 from backend.agents.section_writer import SectionWriterAgent
 from backend.agents.manager import ManagerAgent
 from backend.agents.final_reviewer import FinalReviewerAgent
+from backend.agents.license_writer import LicenseWriterAgent
+from backend.agents.contributing_writer import ContributingWriterAgent
+from backend.agents.code_of_conduct_writer import CodeOfConductWriterAgent
+from backend.agents.security_writer import SecurityWriterAgent
+from backend.agents.support_writer import SupportWriterAgent
+from backend.agents.codeowners_writer import CodeownersWriterAgent
+from backend.agents.community_manager import CommunityManagerAgent
+from backend.agents.community_final_reviewer import CommunityFinalReviewerAgent
 from backend.github_client import GitHubClient
 from backend.config import settings
 from backend.logger import logger
@@ -25,6 +33,7 @@ class WorkflowStatus:
     WRITING_SECTIONS = "writing_sections"
     MANAGER_REVIEW = "manager_review"
     FINAL_REVIEW = "final_review"
+    COMMUNITY_FILES = "community_files"
     COMPLETED = "completed"
     FAILED = "failed"
 
@@ -296,6 +305,19 @@ class DocumentationWorkflow:
             # ----------------------------------------------------------------
             self._save_text('final_reviewer', 'README.md', final_readme)
 
+            await self._update_status(WorkflowStatus.COMMUNITY_FILES, 95, "README complete — generating community files…")
+
+            # ----------------------------------------------------------------
+            # Community file generation (LICENSE, CONTRIBUTING, etc.)
+            # ----------------------------------------------------------------
+            repo_owner = repo_name.split('/')[0] if '/' in repo_name else repo_name
+            community_files = await self._generate_community_files(
+                repo_name=repo_name,
+                repo_owner=repo_owner,
+                codebase_summary=codebase_summary,
+                loop=loop,
+            )
+
             await self._update_status(WorkflowStatus.COMPLETED, 100, "Documentation complete!")
 
             result = {
@@ -303,6 +325,7 @@ class DocumentationWorkflow:
                 'repo_name': repo_name,
                 'repo_url': repo_url,
                 'readme': final_readme,
+                'community_files': community_files,
                 'files_analyzed': len(files),
                 'headings': headings,
                 'final_review': {
@@ -510,6 +533,160 @@ class DocumentationWorkflow:
             approved_sections.append({'heading': heading, 'content': section_content})
 
         return approved_sections
+
+    # ------------------------------------------------------------------
+    # Community file generation
+    # ------------------------------------------------------------------
+
+    async def _generate_community_files(
+        self,
+        repo_name: str,
+        repo_owner: str,
+        codebase_summary: str,
+        loop: asyncio.AbstractEventLoop,
+    ) -> List[Dict[str, str]]:
+        """
+        Generate the 6 community health files with manager review (up to 3 retries
+        per file) and a final reviewer (up to 3 full cycles).
+
+        Returns a list of {'filename': ..., 'content': ...} dicts.
+        """
+        # Define the 6 writer agents
+        writer_factories = [
+            ('LICENSE',             LicenseWriterAgent),
+            ('CONTRIBUTING.md',     ContributingWriterAgent),
+            ('CODE_OF_CONDUCT.md',  CodeOfConductWriterAgent),
+            ('SECURITY.md',         SecurityWriterAgent),
+            ('SUPPORT.md',          SupportWriterAgent),
+            ('CODEOWNERS',          CodeownersWriterAgent),
+        ]
+
+        max_full_cycles = 3
+        approved_files: List[Dict[str, str]] = []
+        community_improvement = ''
+
+        for cycle in range(1, max_full_cycles + 1):
+            logger.info(f"Community files — cycle {cycle}/{max_full_cycles}")
+            approved_files = []
+
+            for filename, WriterClass in writer_factories:
+                agent_id = f"community_{filename.replace('.', '_').lower()}"
+
+                await self._update_status(
+                    WorkflowStatus.COMMUNITY_FILES,
+                    95,
+                    f"[Cycle {cycle}] Writing {filename}…",
+                    agent_update={
+                        'agent_id': agent_id,
+                        'agent_name': f'📄 {filename}',
+                        'agent_status': 'working',
+                    },
+                )
+
+                improvement_notes = community_improvement
+                file_content = ''
+                max_retries = 3
+                manager = CommunityManagerAgent()
+
+                for attempt in range(1, max_retries + 1):
+                    writer = WriterClass()
+                    writer_result = await loop.run_in_executor(
+                        None, writer.run,
+                        {
+                            'repo_name': repo_name,
+                            'repo_owner': repo_owner,
+                            'codebase_summary': codebase_summary,
+                            'improvement_notes': improvement_notes,
+                        },
+                    )
+                    file_content = writer_result['content']
+                    self._save_text(
+                        'community_files',
+                        f'{filename}_cycle{cycle}_attempt{attempt}',
+                        file_content,
+                    )
+
+                    # Manager review
+                    review = await loop.run_in_executor(
+                        None, manager.run,
+                        {
+                            'filename': filename,
+                            'content': file_content,
+                            'repo_name': repo_name,
+                            'repo_owner': repo_owner,
+                        },
+                    )
+
+                    if review.get('approved', False):
+                        logger.success(f"Community Manager APPROVED {filename} on attempt {attempt}")
+                        break
+                    else:
+                        improvement_notes = review.get('improvement_notes', '')
+                        logger.warning(f"Community Manager REJECTED {filename} on attempt {attempt}")
+                        if attempt == max_retries:
+                            logger.warning(f"Max retries for {filename} — using last attempt")
+
+                approved_files.append({'filename': filename, 'content': file_content})
+
+                await self._update_status(
+                    WorkflowStatus.COMMUNITY_FILES,
+                    96,
+                    f"{filename} done ✓",
+                    agent_update={
+                        'agent_id': agent_id,
+                        'agent_name': f'📄 {filename}',
+                        'agent_status': 'completed',
+                    },
+                )
+
+            # Community Final Reviewer
+            await self._update_status(
+                WorkflowStatus.COMMUNITY_FILES,
+                98,
+                f"Final review of community files — cycle {cycle}…",
+                agent_update={
+                    'agent_id': 'community_final_reviewer',
+                    'agent_name': '🔍 Community Final Reviewer',
+                    'agent_status': 'working',
+                },
+            )
+
+            final_reviewer = CommunityFinalReviewerAgent()
+            final_result = await loop.run_in_executor(
+                None, final_reviewer.run,
+                {
+                    'community_files': approved_files,
+                    'repo_name': repo_name,
+                    'repo_owner': repo_owner,
+                },
+            )
+            self._save_json('community_files', f'final_review_cycle_{cycle}.json', final_result)
+
+            await self._update_status(
+                WorkflowStatus.COMMUNITY_FILES,
+                99,
+                "Community files approved!" if final_result.get('approved') else f"Retrying community files (cycle {cycle + 1})…",
+                agent_update={
+                    'agent_id': 'community_final_reviewer',
+                    'agent_name': '🔍 Community Final Reviewer',
+                    'agent_status': 'completed' if final_result.get('approved') or cycle == max_full_cycles else 'working',
+                },
+            )
+
+            if final_result.get('approved', False):
+                logger.success(f"Community Final Reviewer APPROVED on cycle {cycle}")
+                break
+            else:
+                community_improvement = final_result.get('improvement_details', '')
+                logger.warning(f"Community Final Reviewer REJECTED on cycle {cycle}")
+                if cycle == max_full_cycles:
+                    logger.warning("Max community cycles reached — using last set")
+
+        # Save final community files
+        for file_dict in approved_files:
+            self._save_text('community_files', file_dict['filename'], file_dict['content'])
+
+        return approved_files
 
     # ------------------------------------------------------------------
     # Combine sections
