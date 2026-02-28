@@ -1,0 +1,18 @@
+# CODEOWNERS
+
+# Default owner for all files
+* @H0NEYP0T-466
+
+# Backend-specific files
+backend/ @H0NEYP0T-466
+
+# Frontend-specific files (src directory)
+src/ @H0NEYP0T-466
+
+# Documentation files
+*.md @H0NEYP0T-466
+
+# Configuration files
+*.json @H0NEYP0T-466
+*.config.js @H0NEYP0T-466
+*.config.ts @H0NEYP0T-466
