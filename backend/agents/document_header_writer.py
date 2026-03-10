@@ -91,6 +91,7 @@ class DocumentHeaderWriterAgent(BaseAgent):
                 'repo_name':        str,        # full name, e.g. "owner/project-name"
                 'codebase_summary': str,        # content of codebase.txt
                 'headings':         List[str],  # ordered list of selected headings
+                'headings_txt':     str,        # raw content of headings.txt (newline-separated)
             }
 
         Returns:
@@ -101,6 +102,17 @@ class DocumentHeaderWriterAgent(BaseAgent):
         repo_name: str = input_data.get("repo_name", "Unknown Repository")
         codebase_summary: str = input_data.get("codebase_summary", "")
         headings: List[str] = input_data.get("headings", [])
+        # headings_txt is the authoritative newline-separated list from headings.txt;
+        # if provided, parse it to guarantee we use the exact decided heading strings.
+        headings_txt: str = input_data.get("headings_txt", "")
+        if headings_txt:
+            parsed = [
+                re.sub(r'^[-•*\s\d.]+\s*', '', line).strip()
+                for line in headings_txt.splitlines()
+                if line.strip()
+            ]
+            if parsed:
+                headings = parsed
 
         logger.workflow_step("Document Header Writing", f"Writing header for {repo_name}")
 
