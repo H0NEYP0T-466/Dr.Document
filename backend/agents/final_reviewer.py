@@ -15,7 +15,7 @@ class FinalReviewerAgent(BaseAgent):
     """
 
     def __init__(self):
-        super().__init__("Final Reviewer", settings.model_flash_thinking_2601)
+        super().__init__("Final Reviewer", settings.model_flash_thinking)
 
     def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """
