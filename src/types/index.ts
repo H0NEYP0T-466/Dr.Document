@@ -42,6 +42,12 @@ export const AGENT_DEFINITIONS: Omit<Agent, 'status' | 'progress' | 'result'>[] 
     description: 'Deciding which documentation sections to include',
   },
   {
+    id: 'document_header_writer',
+    name: 'Document Header Writer',
+    emoji: '🎨',
+    description: 'Generating the hero section with badges, quick links, and table of contents',
+  },
+  {
     id: 'manager',
     name: 'Manager',
     emoji: '👔',
