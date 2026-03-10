@@ -7,6 +7,7 @@ from typing import Dict, Any, Optional, List, Callable
 from datetime import datetime
 
 from backend.agents.codebase_summarizer import CodebaseSummarizerAgent
+from backend.agents.document_header_writer import DocumentHeaderWriterAgent
 from backend.agents.headings_selector import HeadingsSelectorAgent
 from backend.agents.section_writer import SectionWriterAgent
 from backend.agents.manager import ManagerAgent
@@ -213,6 +214,41 @@ class DocumentationWorkflow:
             )
 
             # ----------------------------------------------------------------
+            # Step 4.5: Document Header Writer — hero section with badges,
+            #            quick links, and table of contents
+            # ----------------------------------------------------------------
+            await self._update_status(
+                WorkflowStatus.SELECTING_HEADINGS, 43,
+                "Writing document header (badges, quick links, TOC)…",
+                agent_update={
+                    'agent_id': 'document_header_writer',
+                    'agent_name': '🎨 Document Header Writer',
+                    'agent_status': 'working',
+                },
+            )
+            header_writer = DocumentHeaderWriterAgent()
+            header_result = await loop.run_in_executor(
+                None, header_writer.run,
+                {
+                    'repo_name': repo_name,
+                    'codebase_summary': codebase_summary,
+                    'headings': headings,
+                },
+            )
+            header_content: str = header_result['header_content']
+            self._save_text('document_header_writer', 'header.md', header_content)
+
+            await self._update_status(
+                WorkflowStatus.SELECTING_HEADINGS, 44,
+                "Document header ready ✓",
+                agent_update={
+                    'agent_id': 'document_header_writer',
+                    'agent_name': '🎨 Document Header Writer',
+                    'agent_status': 'completed',
+                },
+            )
+
+            # ----------------------------------------------------------------
             # Steps 5–7: Section writing + manager review loop
             # Up to 3 full cycles driven by the Final Reviewer
             # ----------------------------------------------------------------
@@ -235,7 +271,7 @@ class DocumentationWorkflow:
                 )
 
                 # Combine sections into a full README
-                final_readme = self._combine_sections(repo_name, approved_sections)
+                final_readme = self._combine_sections(repo_name, approved_sections, header_content)
                 self._save_text('final_reviewer', f'readme_cycle_{cycle}.md', final_readme)
 
                 # Final Reviewer
@@ -692,9 +728,22 @@ class DocumentationWorkflow:
     # Combine sections
     # ------------------------------------------------------------------
 
-    def _combine_sections(self, repo_name: str, sections: List[Dict[str, str]]) -> str:
-        """Combine all approved sections into a single README string."""
-        parts = [f"# {repo_name}\n"]
+    def _combine_sections(
+        self,
+        repo_name: str,
+        sections: List[Dict[str, str]],
+        header_content: str = '',
+    ) -> str:
+        """Combine all approved sections into a single README string.
+
+        If ``header_content`` is provided (from the DocumentHeaderWriterAgent)
+        it is used as the document preamble instead of the plain ``# repo_name``
+        title.
+        """
+        if header_content:
+            parts = [header_content.rstrip(), '']
+        else:
+            parts = [f"# {repo_name}\n"]
         seen_headings: set = set()
         for section in sections:
             heading_key = section['heading'].lower()
