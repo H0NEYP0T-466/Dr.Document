@@ -201,7 +201,8 @@ class DocumentationWorkflow:
                 {'codebase_summary': codebase_summary, 'repo_name': repo_name},
             )
             headings: List[str] = headings_result['headings']
-            self._save_text('headings_selector', 'headings.txt', headings_result['headings_txt'])
+            headings_txt: str = headings_result['headings_txt']
+            self._save_text('headings_selector', 'headings.txt', headings_txt)
 
             await self._update_status(
                 WorkflowStatus.SELECTING_HEADINGS, 42,
@@ -233,6 +234,7 @@ class DocumentationWorkflow:
                     'repo_name': repo_name,
                     'codebase_summary': codebase_summary,
                     'headings': headings,
+                    'headings_txt': headings_txt,
                 },
             )
             header_content: str = header_result['header_content']
@@ -263,6 +265,7 @@ class DocumentationWorkflow:
                 # Section writing + manager review for every heading
                 approved_sections = await self._write_and_review_sections(
                     headings=headings,
+                    headings_txt=headings_txt,
                     codebase_summary=codebase_summary,
                     repo_name=repo_name,
                     cycle=cycle,
@@ -445,6 +448,7 @@ class DocumentationWorkflow:
     async def _write_and_review_sections(
         self,
         headings: List[str],
+        headings_txt: str,
         codebase_summary: str,
         repo_name: str,
         cycle: int,
@@ -493,6 +497,7 @@ class DocumentationWorkflow:
                         'heading': heading,
                         'codebase_summary': codebase_summary,
                         'repo_name': repo_name,
+                        'headings_txt': headings_txt,
                         'improvement_notes': improvement_notes,
                     },
                 )

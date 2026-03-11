@@ -37,6 +37,7 @@ class SectionWriterAgent(BaseAgent):
                 'heading': str,
                 'codebase_summary': str,
                 'repo_name': str,
+                'headings_txt': str        (optional — full list of decided headings)
                 'improvement_notes': str   (optional — provided on retries)
             }
 
@@ -49,6 +50,7 @@ class SectionWriterAgent(BaseAgent):
         heading = input_data.get('heading', self.heading)
         codebase_summary = input_data.get('codebase_summary', '')
         repo_name = input_data.get('repo_name', 'Unknown Repository')
+        headings_txt = input_data.get('headings_txt', '')
         improvement_notes = input_data.get('improvement_notes', '')
 
         logger.workflow_step("Section Writing", f"Writing '{heading}' for {repo_name}")
@@ -91,21 +93,32 @@ class SectionWriterAgent(BaseAgent):
                 'step-by-step code blocks. Use short, focused snippets only.'
             )
 
+        # Heading context block — show the LLM the full set of decided headings
+        headings_context = ''
+        if headings_txt:
+            headings_context = (
+                f'\n\nDECIDED README HEADINGS (these are the exact headings used in this document):\n'
+                f'{headings_txt}\n'
+            )
+
         prompt = (
             f'You are writing the **{heading}** section for the README of the '
             f'repository "{repo_name}".\n\n'
             f'Here is a concise summary of every file in the codebase '
             f'(use this as your ONLY source of truth):\n'
-            f'{codebase_summary}\n\n'
-            f'Write ONLY the content for the "{heading}" section. '
-            f'Start directly with the markdown heading (e.g., ## {heading}).\n'
+            f'{codebase_summary}'
+            f'{headings_context}\n\n'
+            f'Write ONLY the content for the "{heading}" section.\n'
+            f'HEADING RULE: The very first line MUST be exactly `## {heading}` — '
+            f'do NOT add emojis to it, do NOT change the text, and do NOT add extra words.\n'
             f'CRITICAL RULES:\n'
             f'- ONLY mention things that are explicitly evidenced by the codebase summary above. '
             f'Do NOT invent, assume, or hallucinate any features, technologies, files, or '
             f'capabilities that are not directly mentioned in the codebase summary.\n'
-            f'- Be comprehensive and detailed. Aim for 150–600 words of body text. '
-            f'Include all relevant sub-sections, examples, and details supported by the codebase.\n'
-            f'- Use proper Markdown formatting with emojis where appropriate.\n'
+            f'- Be concise but informative. Aim for 80–200 words of body text — '
+            f'standard README length, not too short and not too long.\n'
+            f'- Use proper Markdown formatting with relevant emojis in bullet points, '
+            f'descriptions, and inline text (not in the heading line itself).\n'
             f'- Do NOT include any other sections — only "{heading}".'
             f'{badge_instruction}'
             f'{minimal_code_instruction}'
@@ -124,7 +137,7 @@ class SectionWriterAgent(BaseAgent):
             {"role": "user", "content": prompt},
         ]
 
-        content = self._call_llm(messages, max_tokens=1500, temperature=0.5)
+        content = self._call_llm(messages, max_tokens=700, temperature=0.5)
 
         # Remove any outer markdown code fence that the LLM may have wrapped the
         # entire response in (e.g. ```markdown … ```).
