@@ -247,8 +247,17 @@ class ResearchPaperFormatterAgent(BaseAgent):
                 else:
                     logger.warning(f"pdflatex attempt {attempt} failed: {result.returncode}")
             except FileNotFoundError:
-                logger.warning("pdflatex not installed — skipping PDF compilation")
-                return None, 'pdflatex not installed on system'
+                logger.warning(
+                    "pdflatex binary not found — install the system package, not the pip wrapper.\n"
+                    "    Ubuntu/Debian : sudo apt-get install texlive-latex-base\n"
+                    "    macOS         : brew install basictex\n"
+                    "    Windows       : install MiKTeX from https://miktex.org"
+                )
+                return None, (
+                    'pdflatex binary not found. '
+                    'Install the system package (e.g. texlive-latex-base) — '
+                    "'pip install pdflatex' only provides a Python wrapper and does not supply the binary."
+                )
             except subprocess.TimeoutExpired:
                 logger.warning(f"pdflatex timed out on attempt {attempt}")
                 errors = 'pdflatex timed out'
