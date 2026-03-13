@@ -304,7 +304,7 @@ async def delete_job(job_id: str):
 class GenerateRequest(BaseModel):
     """Request body for POST /api/generate"""
     repo_url: HttpUrl
-    modes: List[str]  # e.g. ["research_paper", "software_doc", "srs"]
+    modes: List[str]  # e.g. ["software_doc", "srs"]
     options: Optional[Dict[str, Any]] = {}
 
 
@@ -322,7 +322,6 @@ async def _run_multi_mode_job(
     repo_name: str,
 ):
     """Background task: run requested mode workflows in parallel."""
-    from backend.workflows.research_paper_workflow import ResearchPaperWorkflow
     from backend.workflows.software_doc_workflow import SoftwareDocWorkflow
     from backend.workflows.srs_workflow import SRSWorkflow
 
@@ -340,13 +339,6 @@ async def _run_multi_mode_job(
 
     # Build workflow instances per mode
     workflow_map = {
-        'research_paper': lambda: ResearchPaperWorkflow(
-            job_dir=job_dir,
-            codebase_summary=codebase_summary,
-            repo_name=repo_name,
-            repo_url=repo_url,
-            status_callback=emit,
-        ),
         'software_doc': lambda: SoftwareDocWorkflow(
             job_dir=job_dir,
             codebase_summary=codebase_summary,
@@ -403,14 +395,14 @@ async def generate(request: GenerateRequest):
     """
     Start a multi-mode documentation generation job.
 
-    Modes: research_paper, software_doc, srs
+    Modes: software_doc, srs
     All selected modes run in parallel after shared codebase analysis.
     """
     from backend.github_client import GitHubClient
     from backend.agents.codebase_summarizer import CodebaseSummarizerAgent
     from backend.config import settings as cfg
 
-    valid_modes = {'research_paper', 'software_doc', 'srs'}
+    valid_modes = {'software_doc', 'srs'}
     modes = [m for m in request.modes if m in valid_modes]
     if not modes:
         raise HTTPException(status_code=400, detail="No valid modes specified")
