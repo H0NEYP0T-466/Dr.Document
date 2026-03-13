@@ -9,6 +9,7 @@ from backend.agents.srs.headings_agent import SRSHeadingsAgent
 from backend.agents.srs.section_writer_agent import SRSSectionWriterAgent
 from backend.agents.srs.manager_agent import SRSManagerAgent
 from backend.agents.srs.formatter_agent import SRSFormatterAgent
+from backend.agents.output_validator import sanitize_content
 from backend.logger import logger
 
 
@@ -197,6 +198,10 @@ class SRSWorkflow:
 
         await asyncio.gather(*[write_section(s) for s in section_states])
 
+        # Sanitize section content to remove any meta chatter that leaked through
+        for state in section_states:
+            state['content'] = sanitize_content(state['content'])
+
         for _ in range(max_restarts):
             pending = [s for s in section_states if not s['approved']]
             if not pending:
@@ -230,6 +235,9 @@ class SRSWorkflow:
             to_restart = [s for s in section_states if not s['approved']]
             if to_restart:
                 await asyncio.gather(*[write_section(s) for s in to_restart])
+                # Sanitize restarted sections
+                for state in to_restart:
+                    state['content'] = sanitize_content(state['content'])
 
         for state in section_states:
             if not state['approved']:

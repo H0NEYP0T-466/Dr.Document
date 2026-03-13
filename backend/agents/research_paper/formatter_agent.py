@@ -78,16 +78,26 @@ class ResearchPaperFormatterAgent(BaseAgent):
         }
 
     def _polish_content(self, sections: List[Dict], title: str) -> List[Dict]:
-        """Use LLM to fix grammar, consistency and tone across all sections."""
+        """Use LLM to fix grammar, consistency and tone across all sections.
+
+        The system prompt explicitly forbids meta narration so the LLM output
+        is always clean document text.  Any remaining chatter is stripped by
+        the output validator as a safety net.
+        """
+        from backend.agents.output_validator import sanitize_content
         polished = []
         for sec in sections:
             messages = [
                 {
                     "role": "system",
                     "content": (
-                        "You are an academic editor. Polish the provided section for grammar, "
-                        "spelling, punctuation, consistent academic tone, and smooth transitions. "
-                        "Do not change the substance. Return only the corrected section text."
+                        "You are an academic copy-editor. Polish the provided section for "
+                        "grammar, spelling, punctuation, consistent academic tone, and smooth "
+                        "transitions. Do not change the substance or add new information. "
+                        "IMPORTANT: Return ONLY the corrected section text — nothing else. "
+                        "Do NOT say 'Here is the polished version', 'Certainly', 'Below is', "
+                        "or include any preface, closing remark, or meta commentary. "
+                        "Start the response with the first word of the section content."
                     ),
                 },
                 {
@@ -99,7 +109,8 @@ class ResearchPaperFormatterAgent(BaseAgent):
             ]
             try:
                 polished_content = self._call_llm(messages, max_tokens=1500, temperature=0.2)
-                polished.append({'name': sec['name'], 'content': polished_content.strip()})
+                polished_content = sanitize_content(polished_content.strip())
+                polished.append({'name': sec['name'], 'content': polished_content})
             except Exception as e:
                 logger.warning(f"Could not polish section '{sec['name']}': {e}")
                 polished.append(sec)

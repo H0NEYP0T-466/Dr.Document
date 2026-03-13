@@ -35,9 +35,14 @@ interface WsMessage extends StatusUpdate {
 
 type AppState = 'input' | 'processing' | 'completed' | 'error';
 
-/** Build the initial static agent list */
-const buildInitialAgents = (): Agent[] =>
-  AGENT_DEFINITIONS.map(def => ({ ...def, status: 'idle', progress: 0 }))
+/** Build the initial static agent list — only include GitHub docs agents when github_docs is requested */
+const buildInitialAgents = (modes: string[] = []): Agent[] => {
+  // Only add the static GitHub docs agents when the github_docs mode is selected
+  if (modes.length === 0 || modes.includes('github_docs')) {
+    return AGENT_DEFINITIONS.map(def => ({ ...def, status: 'idle', progress: 0 }))
+  }
+  return []
+}
 
 function App() {
   const [appState, setAppState] = useState<AppState>('input')
@@ -260,7 +265,7 @@ function App() {
       setError(null)
       setStatusMessage('Starting documentation generation...')
       setOverallProgress(0)
-      setAgents(buildInitialAgents())
+      setAgents(buildInitialAgents(modes))
       setResult(null)
       setMultiModeResults(null)
       setRequestedModes(modes)
