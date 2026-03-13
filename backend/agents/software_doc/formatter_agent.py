@@ -74,17 +74,22 @@ class SoftwareDocFormatterAgent(BaseAgent):
 
     def _latex_escape(self, text: str) -> str:
         """Escape special LaTeX characters."""
-        replacements = [
-            ('\\', r'\textbackslash{}'),
-            ('&', r'\&'),
-            ('%', r'\%'),
-            ('$', r'\$'),
-            ('#', r'\#'),
-            ('^', r'\textasciicircum{}'),
-            ('~', r'\textasciitilde{}'),
-        ]
-        for old, new in replacements:
-            text = text.replace(old, new)
+        # Use a placeholder so that { and } introduced by later replacements
+        # are not themselves re-escaped.
+        _BS = '\x00BS\x00'
+        text = text.replace('\\', _BS)
+        text = text.replace('{', r'\{')
+        text = text.replace('}', r'\}')
+        text = text.replace(_BS, r'\textbackslash{}')
+        text = text.replace('&', r'\&')
+        text = text.replace('%', r'\%')
+        text = text.replace('$', r'\$')
+        text = text.replace('#', r'\#')
+        text = text.replace('_', r'\_')          # fixes "! Missing $ inserted."
+        text = text.replace('^', r'\textasciicircum{}')
+        text = text.replace('~', r'\textasciitilde{}')
+        text = text.replace('<', r'\textless{}')
+        text = text.replace('>', r'\textgreater{}')
         return text
 
     def _generate_latex(
@@ -172,7 +177,15 @@ The content is derived solely from the codebase and does not represent any offic
                     )
                     return pdf_path, ''
                 else:
-                    logger.warning(f"pdflatex attempt {attempt} failed")
+                    # Extract only error/warning lines to keep logs readable
+                    relevant = '\n'.join(
+                        line for line in errors.splitlines()
+                        if line.startswith('!') or 'Error' in line or 'error' in line
+                    )
+                    logger.warning(
+                        f"pdflatex attempt {attempt} failed (rc={result.returncode})"
+                        + (f":\n{relevant}" if relevant else f"\n{errors[-800:]}")
+                    )
             except FileNotFoundError:
                 logger.warning(
                     "pdflatex binary not found — install the system package, not the pip wrapper.\n"
