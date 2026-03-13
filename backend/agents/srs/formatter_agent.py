@@ -174,13 +174,16 @@ class SRSFormatterAgent(BaseAgent):
         sections_json = json.dumps(sections)
         author = repo_name.split('/')[0] if '/' in repo_name else repo_name
 
+        # Project root is 4 levels up from this file: backend/agents/srs/formatter_agent.py
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
         node_script = f"""
 const path = require('path');
 let docx;
 try {{
   docx = require('docx');
 }} catch(e) {{
-  docx = require(path.join('{os.getcwd()}', 'node_modules', 'docx'));
+  docx = require(path.join({json.dumps(project_root)}, 'node_modules', 'docx'));
 }}
 const {{ Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
          HeadingLevel, AlignmentType, Footer, PageNumber,
