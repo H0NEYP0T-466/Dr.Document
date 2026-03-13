@@ -39,3 +39,4 @@ backend/storage/
 backend/dr_document.log
 *.egg-info/
 .pytest_cache/
+jobs/

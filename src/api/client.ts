@@ -51,6 +51,31 @@ export interface StatusUpdate {
   timestamp: string;
 }
 
+// Multi-mode API types
+
+export interface GenerateRequest {
+  repo_url: string;
+  modes: string[];
+  options?: Record<string, unknown>;
+}
+
+export interface GenerateResponse {
+  job_id: string;
+  modes_started: string[];
+}
+
+export interface ModeResult {
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  files?: Record<string, string>;
+  error?: string;
+}
+
+export interface MultiModeResults {
+  job_id: string;
+  status: string;
+  modes: Record<string, ModeResult>;
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -107,6 +132,47 @@ class ApiClient {
   }
 
   /**
+   * Start a multi-mode documentation generation job.
+   */
+  async generate(request: GenerateRequest): Promise<GenerateResponse> {
+    const response = await fetch(`${this.baseUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to start generation');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Poll results for a multi-mode job.
+   */
+  async getMultiModeResults(jobId: string): Promise<MultiModeResults> {
+    const response = await fetch(`${this.baseUrl}/api/results/${jobId}`);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to get results');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Build a download URL for a generated file.
+   * The backend returns paths like /download/{job_id}/{filename}.
+   */
+  getDownloadUrl(path: string): string {
+    // path is already like /download/{job_id}/{filename}
+    return `${this.baseUrl}${path}`;
+  }
+
+  /**
    * Connect to WebSocket for real-time updates
    */
   connectWebSocket(
@@ -159,3 +225,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
+
