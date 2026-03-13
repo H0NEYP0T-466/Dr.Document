@@ -1,6 +1,7 @@
 """Research Paper generation workflow"""
 import asyncio
 import os
+import re
 from typing import Dict, Any, List, Callable, Optional
 from datetime import datetime
 
@@ -208,7 +209,8 @@ class ResearchPaperWorkflow:
                 },
             )
             state['content'] = result['content']
-            self._save(state['content'], f"section_{state['name'].replace(' ', '_')}.txt")
+            safe_name = re.sub(r'[^\w\-]', '_', state['name'])[:60]
+            self._save(state['content'], f"section_{safe_name}.txt")
             await self._emit({
                 'type': 'agent_completed',
                 'agent': 'section_writer',
