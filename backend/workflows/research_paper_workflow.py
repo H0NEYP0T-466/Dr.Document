@@ -10,6 +10,7 @@ from backend.agents.research_paper.headings_agent import ResearchPaperHeadingsAg
 from backend.agents.research_paper.section_writer_agent import ResearchPaperSectionWriterAgent
 from backend.agents.research_paper.manager_agent import ResearchPaperManagerAgent
 from backend.agents.research_paper.formatter_agent import ResearchPaperFormatterAgent
+from backend.agents.output_validator import sanitize_content
 from backend.logger import logger
 
 
@@ -222,6 +223,10 @@ class ResearchPaperWorkflow:
         # Initial parallel write
         await asyncio.gather(*[write_section(s) for s in section_states])
 
+        # Sanitize section content to remove any meta chatter that leaked through
+        for state in section_states:
+            state['content'] = sanitize_content(state['content'])
+
         # Manager review rounds (sequential to allow restarts)
         for _ in range(max_restarts):
             pending = [s for s in section_states if not s['approved']]
@@ -260,6 +265,9 @@ class ResearchPaperWorkflow:
             to_restart = [s for s in section_states if not s['approved']]
             if to_restart:
                 await asyncio.gather(*[write_section(s) for s in to_restart])
+                # Sanitize restarted sections
+                for state in to_restart:
+                    state['content'] = sanitize_content(state['content'])
 
         # Force-approve any remaining sections and log warnings
         for state in section_states:

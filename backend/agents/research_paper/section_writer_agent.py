@@ -64,7 +64,12 @@ class ResearchPaperSectionWriterAgent(BaseAgent):
                 "content": (
                     "You are an expert academic researcher and technical writer. "
                     "Write formal, high-quality research paper sections in academic English. "
-                    "Never fabricate — only write what can be inferred from the codebase."
+                    "Never fabricate — only write what can be inferred from the codebase. "
+                    "IMPORTANT: Return ONLY the document text for the section. "
+                    "Do NOT include any preface, explanation, apology, or meta commentary. "
+                    "Do NOT say 'Here is...', 'Certainly...', 'I'll write...', "
+                    "'Below is...', 'The following is...', or any similar phrase. "
+                    "Start the response directly with the section content."
                 ),
             },
             {
@@ -83,6 +88,7 @@ class ResearchPaperSectionWriterAgent(BaseAgent):
                     f"- If information is unavailable: write "
                     f"'Not determinable from repository analysis.'\n"
                     f"- Cite relevant files from the codebase summary as evidence\n"
+                    f"- Write plain prose paragraphs; the document formatter handles headings\n"
                     f"{section_rules}"
                     f"{feedback_block}"
                 ),
@@ -119,5 +125,5 @@ class ResearchPaperSectionWriterAgent(BaseAgent):
             )
         return (
             '- Minimum 300 words\n'
-            '- Use \\section{} heading style in prose\n'
+            '- Write plain prose paragraphs; do not include LaTeX or Markdown heading commands\n'
         )

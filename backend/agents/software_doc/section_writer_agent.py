@@ -60,7 +60,12 @@ class SoftwareDocSectionWriterAgent(BaseAgent):
                     "You are an expert technical documentation writer. "
                     "Write clear, explanatory software documentation sections. "
                     "The tone should be professional but accessible — explain what the system "
-                    "does and how it works. Never fabricate."
+                    "does and how it works. Never fabricate. "
+                    "IMPORTANT: Return ONLY the document text for the section. "
+                    "Do NOT include any preface, explanation, apology, or meta commentary. "
+                    "Do NOT say 'Here is...', 'Certainly...', 'Below is...', "
+                    "'The following is...', or any similar phrase. "
+                    "Start the response directly with the section content."
                 ),
             },
             {
