@@ -65,8 +65,8 @@ class BaseAgent(ABC):
                 temperature=temperature
             )
             
-            # Extract response content
-            result = response.choices[0].message.content
+            # Extract response content (coerce None to empty string)
+            result = response.choices[0].message.content or ''
             
             # Log LLM output
             logger.llm_output(self.model, result)

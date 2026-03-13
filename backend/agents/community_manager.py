@@ -79,6 +79,15 @@ class CommunityManagerAgent(BaseAgent):
 
         review = self._call_llm(messages, max_tokens=512, temperature=0.3)
 
+        if not review:
+            logger.error(f"LLM returned empty response for {filename} review")
+            return {
+                'approved': False,
+                'quality_score': 0,
+                'feedback': 'LLM returned empty response',
+                'improvement_notes': 'Please retry the request or check LLM configuration',
+            }
+
         approved = self._extract_approval(review)
         quality_score = self._extract_quality_score(review)
         improvement_notes = '' if approved else self._extract_improvement_notes(review)

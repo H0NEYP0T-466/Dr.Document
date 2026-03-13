@@ -88,6 +88,10 @@ class CommunityFinalReviewerAgent(BaseAgent):
 
         review = self._call_llm(messages, max_tokens=1024, temperature=0.3)
 
+        if not review:
+            logger.error("LLM returned empty response for community final review")
+            return self._rejection_result("LLM returned empty response")
+
         approved = self._extract_approval(review)
         score = self._extract_score(review)
         issues = self._extract_list(review, 'ISSUES')

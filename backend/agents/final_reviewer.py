@@ -88,6 +88,10 @@ class FinalReviewerAgent(BaseAgent):
 
         review = self._call_llm(messages, max_tokens=2048)
 
+        if not review:
+            logger.error("LLM returned empty response for final review")
+            return self._rejection_result("LLM returned empty response")
+
         approved = self._extract_approval(review)
         completeness = self._extract_score(review, 'COMPLETENESS')
         accuracy = self._extract_score(review, 'ACCURACY')
