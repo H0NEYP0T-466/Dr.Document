@@ -10,6 +10,8 @@ export interface Agent {
   description: string;
   progress?: number;
   result?: string;
+  mode?: string;  // which mode this agent belongs to
+  section?: string; // section name for section_writer agents
 }
 
 export interface WorkflowState {
@@ -25,6 +27,57 @@ export interface WorkflowState {
 /** Minimal shape for workflow result (matches ResultResponse from api/client) */
 export interface ResultShape {
   [key: string]: unknown;
+}
+
+/** Mode identifiers */
+export type Mode = 'github_docs' | 'research_paper' | 'software_doc' | 'srs';
+
+/** Mode card metadata */
+export interface ModeCard {
+  id: Mode;
+  title: string;
+  description: string;
+  emoji: string;
+  subOptions?: Array<{ id: string; label: string }>;
+}
+
+export const MODE_CARDS: ModeCard[] = [
+  {
+    id: 'github_docs',
+    title: 'GitHub Documentation',
+    description: 'Generates README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, CODEOWNERS, SUPPORT, and SECURITY files.',
+    emoji: '📚',
+  },
+  {
+    id: 'research_paper',
+    title: 'Research Paper',
+    description: 'Generates a formal IEEE-style academic research paper from the repository.',
+    emoji: '🔬',
+  },
+  {
+    id: 'software_doc',
+    title: 'Academic Documentation',
+    description: 'Generates a full software documentation report or IEEE 830 SRS — or both.',
+    emoji: '🎓',
+    subOptions: [
+      { id: 'software_doc', label: 'Software Documentation' },
+      { id: 'srs', label: 'SRS (IEEE 830)' },
+    ],
+  },
+];
+
+/** Per-mode result info */
+export interface ModeResult {
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  files?: Record<string, string>;  // format → download URL
+  error?: string;
+}
+
+/** Multi-mode job results */
+export interface MultiModeResults {
+  job_id: string;
+  status: string;
+  modes: Record<string, ModeResult>;
 }
 
 /** Static agents that are always shown in the UI */
@@ -102,4 +155,5 @@ export const AGENT_DEFINITIONS: Omit<Agent, 'status' | 'progress' | 'result'>[] 
     description: 'Validating all community health files',
   },
 ];
+
 

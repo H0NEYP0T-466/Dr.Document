@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import type { ResultResponse, CommunityFile } from '../api/client';
+import type { ResultResponse, CommunityFile, MultiModeResults, ModeResult } from '../api/client';
+import { apiClient } from '../api/client';
 import './ResultDisplay.css';
 
 interface ResultDisplayProps {
-  result: ResultResponse;
+  result: ResultResponse | null;
+  multiModeResults: MultiModeResults | null;
   onReset: () => void;
 }
 
@@ -14,18 +16,39 @@ interface WorkspaceFile {
   isMarkdown: boolean;
 }
 
-const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
-  const allFiles: WorkspaceFile[] = [
-    { filename: 'README.md', content: result.readme, isMarkdown: true },
-    ...(result.community_files || []).map((f: CommunityFile) => ({
-      filename: f.filename,
-      content: f.content,
-      isMarkdown: f.filename.endsWith('.md'),
-    })),
-  ];
+const MODE_LABELS: Record<string, string> = {
+  research_paper: '🔬 Research Paper',
+  software_doc: '🎓 Software Doc',
+  srs: '📋 SRS',
+};
 
-  const [selectedFile, setSelectedFile] = useState<WorkspaceFile>(allFiles[0] ?? { filename: 'README.md', content: '', isMarkdown: true });
+const FORMAT_LABELS: Record<string, string> = {
+  pdf: '📄 PDF',
+  docx: '📝 DOCX',
+  tex: '🔤 LaTeX',
+};
+
+const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, multiModeResults, onReset }) => {
+  // Legacy GitHub docs result
+  const allFiles: WorkspaceFile[] = result
+    ? [
+        { filename: 'README.md', content: result.readme, isMarkdown: true },
+        ...(result.community_files || []).map((f: CommunityFile) => ({
+          filename: f.filename,
+          content: f.content,
+          isMarkdown: f.filename.endsWith('.md'),
+        })),
+      ]
+    : [];
+
+  const [selectedFile, setSelectedFile] = useState<WorkspaceFile>(
+    allFiles[0] ?? { filename: 'README.md', content: '', isMarkdown: true }
+  );
   const [copied, setCopied] = useState(false);
+
+  // Multi-mode tab state
+  const modeKeys = multiModeResults ? Object.keys(multiModeResults.modes) : [];
+  const [activeMode, setActiveMode] = useState<string>(modeKeys[0] ?? '');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(selectedFile.content);
@@ -49,6 +72,16 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
     allFiles.forEach(file => handleDownloadFile(file));
   };
 
+  const handleDownloadGenerated = (downloadPath: string, filename: string) => {
+    const url = apiClient.getDownloadUrl(downloadPath);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const getFileEmoji = (filename: string) => {
     if (filename === 'README.md') return '📖';
     if (filename === 'LICENSE') return '⚖️';
@@ -59,6 +92,77 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onReset }) => {
     if (filename === 'CODEOWNERS') return '👥';
     return '📄';
   };
+
+  // ── Multi-mode results view ──────────────────────────────────
+  if (multiModeResults && modeKeys.length > 0) {
+    const currentMode: ModeResult = multiModeResults.modes[activeMode] ?? { status: 'pending' };
+
+    return (
+      <div className="result-display">
+        <div className="result-header">
+          <div className="header-content">
+            <h2>✨ Generation Complete!</h2>
+          </div>
+          <div className="header-actions">
+            <button onClick={onReset} className="action-button reset-button">
+              🔄 New Repository
+            </button>
+          </div>
+        </div>
+
+        {/* Mode tabs */}
+        <div className="mode-result-tabs">
+          {modeKeys.map(mode => (
+            <button
+              key={mode}
+              className={`mode-result-tab ${activeMode === mode ? 'mode-result-tab--active' : ''}`}
+              onClick={() => setActiveMode(mode)}
+            >
+              {MODE_LABELS[mode] ?? mode}
+              {' '}
+              {multiModeResults.modes[mode].status === 'completed' ? '✓' :
+               multiModeResults.modes[mode].status === 'failed' ? '✗' : '⏳'}
+            </button>
+          ))}
+        </div>
+
+        {/* Mode content */}
+        <div className="mode-result-content">
+          {currentMode.status === 'failed' ? (
+            <div className="mode-error">
+              <p>❌ {currentMode.error || 'Generation failed for this mode.'}</p>
+            </div>
+          ) : currentMode.status === 'completed' && currentMode.files ? (
+            <div className="mode-files">
+              <p className="mode-files-label">Download generated files:</p>
+              <div className="mode-file-buttons">
+                {Object.entries(currentMode.files).map(([fmt, path]) => {
+                  const ext = path.split('.').pop() ?? fmt;
+                  const filename = path.split('/').pop() ?? `${activeMode}.${ext}`;
+                  return (
+                    <button
+                      key={fmt}
+                      className="download-file-btn"
+                      onClick={() => handleDownloadGenerated(path, filename)}
+                    >
+                      {FORMAT_LABELS[fmt] ?? fmt} ↓
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="mode-pending">
+              <p>⏳ Still generating…</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Legacy GitHub Docs result view ───────────────────────────
+  if (!result) return null;
 
   return (
     <div className="result-display">
