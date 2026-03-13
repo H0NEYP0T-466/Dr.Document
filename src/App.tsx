@@ -48,17 +48,24 @@ function App() {
   const [multiModeResults, setMultiModeResults] = useState<MultiModeResults | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [ws, setWs] = useState<WebSocket | null>(null)
+  const [ws2, setWs2] = useState<WebSocket | null>(null)
   // Track which modes were requested
   const [requestedModes, setRequestedModes] = useState<string[]>([])
+  // Per-mode status messages for separate panel display
+  const [modeStatusMessages, setModeStatusMessages] = useState<Record<string, string>>({})
+  // Track completion of each flow independently
+  const githubDocsCompletedRef = useRef(false)
+  const multiModeCompletedRef = useRef(false)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Cleanup WebSocket and polling on unmount
   useEffect(() => {
     return () => {
       if (ws) ws.close()
+      if (ws2) ws2.close()
       if (pollRef.current) clearInterval(pollRef.current)
     }
-  }, [ws])
+  }, [ws, ws2])
 
   /**
    * Apply an agent_update payload from a WebSocket message.
@@ -103,6 +110,7 @@ function App() {
 
     switch (msg.type) {
       case 'mode_started':
+        setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: `Starting ${msg.mode}...` }))
         setStatusMessage(`Starting ${msg.mode}...`)
         break
 
@@ -124,6 +132,7 @@ function App() {
           }
           return [...prev, newAgent]
         })
+        setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: `Running ${label}...` }))
         setStatusMessage(`Running ${label}...`)
         break
       }
@@ -140,18 +149,26 @@ function App() {
 
       case 'manager_decision': {
         if (msg.decision === 'RESTART') {
-          setStatusMessage(`[${msg.mode}] Section "${msg.section}" restarting (${msg.restart_count}/3)`)
+          const statusMsg = `[${msg.mode}] Section "${msg.section}" restarting (${msg.restart_count}/3)`
+          setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: statusMsg }))
+          setStatusMessage(statusMsg)
         }
         break
       }
 
-      case 'formatter_compiling':
-        setStatusMessage(`[${msg.mode}] Compiling ${msg.stage}...`)
+      case 'formatter_compiling': {
+        const statusMsg = `[${msg.mode}] Compiling ${msg.stage}...`
+        setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: statusMsg }))
+        setStatusMessage(statusMsg)
         break
+      }
 
-      case 'mode_completed':
-        setStatusMessage(`[${msg.mode}] Complete ✓`)
+      case 'mode_completed': {
+        const statusMsg = `[${msg.mode}] Complete ✓`
+        setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: statusMsg }))
+        setStatusMessage(statusMsg)
         break
+      }
 
       case 'job_completed':
         setStatusMessage('All modes complete!')
@@ -164,22 +181,27 @@ function App() {
 
   /**
    * Handles the legacy GitHub Docs flow (single mode).
+   * Returns a websocket so it can be stored separately.
    */
-  const handleGitHubDocsFlow = async (repoUrl: string) => {
+  const handleGitHubDocsFlow = async (repoUrl: string, onAllDone: () => void) => {
     const response = await apiClient.processRepository(repoUrl)
 
     const websocket = apiClient.connectWebSocket(
       response.job_id,
       (wsUpdate: StatusUpdate & { agent_update?: AgentUpdatePayload }) => {
-        setOverallProgress((wsUpdate as WsMessage).progress ?? 0)
-        setStatusMessage((wsUpdate as WsMessage).message ?? '')
+        const progress = (wsUpdate as WsMessage).progress ?? 0
+        setOverallProgress(prev => Math.max(prev, progress))
+        const msg = (wsUpdate as WsMessage).message ?? ''
+        setStatusMessage(msg)
+        setModeStatusMessages(prev => ({ ...prev, github_docs: msg }))
 
         if ((wsUpdate as WsMessage).agent_update) {
           applyAgentUpdate((wsUpdate as WsMessage).agent_update!)
         }
 
         if (wsUpdate.status === 'completed') {
-          fetchResult(response.job_id)
+          githubDocsCompletedRef.current = true
+          fetchResult(response.job_id, onAllDone)
         } else if (wsUpdate.status === 'failed') {
           setError(wsUpdate.message)
           setAppState('error')
@@ -189,13 +211,14 @@ function App() {
       () => { console.log('WebSocket closed') }
     )
 
-    setWs(websocket)
+    return websocket
   }
 
   /**
    * Handles the new multi-mode flow.
+   * Returns a websocket so it can be stored separately.
    */
-  const handleMultiModeFlow = async (repoUrl: string, modes: string[]) => {
+  const handleMultiModeFlow = async (repoUrl: string, modes: string[], onAllDone: () => void) => {
     const response = await apiClient.generate({ repo_url: repoUrl, modes })
     const jobId = response.job_id
 
@@ -205,29 +228,30 @@ function App() {
         applyMultiModeEvent(wsUpdate as WsMessage)
 
         if ((wsUpdate as WsMessage).type === 'job_completed') {
-          fetchMultiModeResults(jobId)
+          multiModeCompletedRef.current = true
+          fetchMultiModeResults(jobId, onAllDone)
         }
       },
       (err) => { console.error('WebSocket error:', err) },
       () => { console.log('WebSocket closed') }
     )
 
-    setWs(websocket)
-
     // Fallback: also poll results every 5 seconds
     pollRef.current = setInterval(async () => {
       try {
         const results = await apiClient.getMultiModeResults(jobId)
         setMultiModeResults(results)
-        if (results.status === 'completed') {
+        if (results.status === 'completed' && !multiModeCompletedRef.current) {
+          multiModeCompletedRef.current = true
           if (pollRef.current) clearInterval(pollRef.current)
-          setAppState('completed')
-          setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+          onAllDone()
         }
       } catch (e) {
         console.error('Failed to poll results:', e)
       }
     }, 5000)
+
+    return websocket
   }
 
   const handleSubmit = async (repoUrl: string, modes: string[]) => {
@@ -240,17 +264,46 @@ function App() {
       setResult(null)
       setMultiModeResults(null)
       setRequestedModes(modes)
+      setModeStatusMessages({})
+      githubDocsCompletedRef.current = false
+      multiModeCompletedRef.current = false
 
-      // Determine which flow to use based on selected modes
-      // The 'github_docs' mode is served by the legacy /api/process-repo endpoint.
-      // All other modes (research_paper, software_doc, srs) go through /api/generate.
-      const onlyGithubDocs = modes.length === 0 || (modes.length === 1 && modes[0] === 'github_docs')
+      const hasGithubDocs = modes.includes('github_docs')
       const multiModes = modes.filter(m => m !== 'github_docs')
+      const hasMultiModes = multiModes.length > 0
 
-      if (onlyGithubDocs) {
-        await handleGitHubDocsFlow(repoUrl)
+      // Determine how many flows are running so we know when ALL are done
+      const flowsExpected = (hasGithubDocs ? 1 : 0) + (hasMultiModes ? 1 : 0)
+      let flowsDone = 0
+
+      const onFlowDone = () => {
+        flowsDone++
+        if (flowsDone >= flowsExpected) {
+          setAppState('completed')
+          setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+        }
+      }
+
+      if (hasGithubDocs && !hasMultiModes) {
+        // Only GitHub Docs
+        const websocket = await handleGitHubDocsFlow(repoUrl, onFlowDone)
+        setWs(websocket)
+      } else if (!hasGithubDocs && hasMultiModes) {
+        // Only multi-mode
+        const websocket = await handleMultiModeFlow(repoUrl, multiModes, onFlowDone)
+        setWs(websocket)
+      } else if (hasGithubDocs && hasMultiModes) {
+        // Both flows in parallel
+        const [websocket1, websocket2] = await Promise.all([
+          handleGitHubDocsFlow(repoUrl, onFlowDone),
+          handleMultiModeFlow(repoUrl, multiModes, onFlowDone),
+        ])
+        setWs(websocket1)
+        setWs2(websocket2)
       } else {
-        await handleMultiModeFlow(repoUrl, multiModes)
+        // Nothing selected — shouldn't happen but handle gracefully
+        setError('Please select at least one output mode')
+        setAppState('error')
       }
 
     } catch (err) {
@@ -260,12 +313,15 @@ function App() {
     }
   }
 
-  const fetchResult = async (id: string) => {
+  const fetchResult = async (id: string, onDone?: () => void) => {
     try {
       const resultData = await apiClient.getResult(id)
       setResult(resultData)
-      setAppState('completed')
-      setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+      if (onDone) onDone()
+      else {
+        setAppState('completed')
+        setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+      }
     } catch (err) {
       console.error('Failed to fetch result:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch result')
@@ -273,12 +329,15 @@ function App() {
     }
   }
 
-  const fetchMultiModeResults = async (jobId: string) => {
+  const fetchMultiModeResults = async (jobId: string, onDone?: () => void) => {
     try {
       const results = await apiClient.getMultiModeResults(jobId)
       setMultiModeResults(results)
-      setAppState('completed')
-      setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+      if (onDone) onDone()
+      else {
+        setAppState('completed')
+        setAgents(prev => prev.map(a => ({ ...a, status: 'completed', progress: 100 })))
+      }
     } catch (err) {
       console.error('Failed to fetch multi-mode results:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch results')
@@ -288,6 +347,7 @@ function App() {
 
   const handleReset = () => {
     if (ws) ws.close()
+    if (ws2) ws2.close()
     if (pollRef.current) clearInterval(pollRef.current)
     setAppState('input')
     setResult(null)
@@ -295,8 +355,11 @@ function App() {
     setError(null)
     setOverallProgress(0)
     setStatusMessage('')
+    setModeStatusMessages({})
     setAgents(buildInitialAgents())
     setRequestedModes([])
+    githubDocsCompletedRef.current = false
+    multiModeCompletedRef.current = false
   }
 
   return (
@@ -311,6 +374,7 @@ function App() {
           overallProgress={overallProgress}
           statusMessage={statusMessage}
           modes={requestedModes}
+          modeStatusMessages={modeStatusMessages}
         />
       )}
 

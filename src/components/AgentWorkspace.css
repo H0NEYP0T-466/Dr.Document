@@ -1,6 +1,6 @@
 .agent-workspace {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -91,6 +91,7 @@
   font-style: italic;
 }
 
+/* Fallback flat grid */
 .agents-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -106,6 +107,156 @@
   }
 }
 
+/* ── Mode Panels Layout ──────────────────────────────────────── */
+
+.mode-panels {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* 1 panel: full width */
+.mode-panels--1 {
+  grid-template-columns: 1fr;
+}
+
+/* 2 panels: side by side */
+.mode-panels--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3 panels: three columns */
+.mode-panels--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 4 panels: two rows of two */
+.mode-panels--4 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ── Single Mode Panel ──────────────────────────────────────── */
+
+.mode-panel {
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid #1a1a1a;
+  background: #080808;
+}
+
+.mode-panel__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.mode-panel__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mode-panel__progress-pct {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.mode-panel__working-badge {
+  font-size: 0.72rem;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 12px;
+  padding: 0.15rem 0.55rem;
+}
+
+.mode-panel__progress-bar {
+  height: 4px;
+  background: #111;
+  overflow: hidden;
+}
+
+.mode-panel__progress-fill {
+  height: 100%;
+  background: #4ade80;
+  transition: width 0.4s ease;
+}
+
+.mode-panel__status {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.8rem;
+  color: #888;
+  font-style: italic;
+  border-bottom: 1px solid #111;
+  min-height: 2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mode-panel__agents {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.mode-panel__empty {
+  text-align: center;
+  color: #555;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+/* Color accents per mode */
+.mode-panel--github_docs .mode-panel__progress-fill {
+  background: #60a5fa;
+}
+.mode-panel--research_paper .mode-panel__progress-fill {
+  background: #a78bfa;
+}
+.mode-panel--software_doc .mode-panel__progress-fill {
+  background: #34d399;
+}
+.mode-panel--srs .mode-panel__progress-fill {
+  background: #fbbf24;
+}
+
+.mode-panel--github_docs .mode-panel__header {
+  border-top: 3px solid #60a5fa;
+}
+.mode-panel--research_paper .mode-panel__header {
+  border-top: 3px solid #a78bfa;
+}
+.mode-panel--software_doc .mode-panel__header {
+  border-top: 3px solid #34d399;
+}
+.mode-panel--srs .mode-panel__header {
+  border-top: 3px solid #fbbf24;
+}
+
+@media (max-width: 1024px) {
+  .mode-panels--3,
+  .mode-panels--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .agent-workspace {
     padding: 1rem;
@@ -115,40 +266,16 @@
     font-size: 2rem;
   }
 
+  .mode-panels,
+  .mode-panels--1,
+  .mode-panels--2,
+  .mode-panels--3,
+  .mode-panels--4 {
+    grid-template-columns: 1fr;
+  }
+
   .agents-grid {
     grid-template-columns: 1fr;
   }
-}
-
-/* ── Mode Tab Bar ────────────────────────────────────────────── */
-.mode-tab-bar {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.mode-tab {
-  padding: 0.4rem 1rem;
-  font-size: 0.85rem;
-  border: 1px solid #333;
-  border-radius: 20px;
-  background: transparent;
-  color: #888;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mode-tab:hover {
-  border-color: #555;
-  color: #ccc;
-}
-
-.mode-tab--active {
-  border-color: #666;
-  background: #111;
-  color: #e0e0e0;
-  font-weight: 600;
 }
 

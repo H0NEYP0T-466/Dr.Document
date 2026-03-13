@@ -62,11 +62,8 @@ const RepoInput: React.FC<RepoInputProps> = ({ onSubmit, disabled = false }) => 
           }
         }
       } else {
-        // For plain cards, use the card id directly
-        // 'github_docs' is handled by the existing /api/process-repo flow
-        if (card.id !== 'github_docs') {
-          modes.push(card.id);
-        }
+        // Include all plain card IDs (including 'github_docs')
+        modes.push(card.id);
       }
     }
     return modes;
