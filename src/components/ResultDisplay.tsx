@@ -17,7 +17,6 @@ interface WorkspaceFile {
 }
 
 const MODE_LABELS: Record<string, string> = {
-  research_paper: '🔬 Research Paper',
   software_doc: '🎓 Academic Documentation',
   srs: '📋 SRS (IEEE 830)',
 };

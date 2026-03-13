@@ -30,7 +30,7 @@ export interface ResultShape {
 }
 
 /** Mode identifiers */
-export type Mode = 'github_docs' | 'research_paper' | 'software_doc' | 'srs';
+export type Mode = 'github_docs' | 'software_doc' | 'srs';
 
 /** Mode card metadata */
 export interface ModeCard {
@@ -47,12 +47,6 @@ export const MODE_CARDS: ModeCard[] = [
     title: 'GitHub Documentation',
     description: 'Generates README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, CODEOWNERS, SUPPORT, and SECURITY files.',
     emoji: '📚',
-  },
-  {
-    id: 'research_paper',
-    title: 'Research Paper',
-    description: 'Generates a formal IEEE-style academic research paper from the repository.',
-    emoji: '🔬',
   },
   {
     id: 'software_doc',

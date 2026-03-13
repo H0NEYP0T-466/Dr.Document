@@ -5,7 +5,6 @@ import './AgentWorkspace.css';
 
 const MODE_LABELS: Record<string, string> = {
   github_docs: '📚 GitHub Documentation',
-  research_paper: '🔬 Research Paper',
   software_doc: '🎓 Academic Documentation',
   srs: '📋 SRS (IEEE 830)',
 };
