@@ -74,6 +74,21 @@ async def startup_event():
     logger.info(f"Storage path: {settings.storage_path}")
     logger.info(f"LongCat API configured: {bool(settings.longcat_api_key)}")
 
+    # Check for pdflatex system binary availability
+    pdflatex_path = shutil.which('pdflatex')
+    if pdflatex_path:
+        logger.info(f"pdflatex found: {pdflatex_path}")
+    else:
+        logger.warning(
+            "pdflatex binary not found — PDF output will be unavailable.\n"
+            "  'pip install pdflatex' only installs a Python wrapper and does NOT provide the binary.\n"
+            "  Install the system package instead:\n"
+            "    Ubuntu/Debian : sudo apt-get install texlive-latex-base\n"
+            "    Fedora/RHEL   : sudo dnf install texlive-latex\n"
+            "    macOS         : brew install basictex  (or install MacTeX)\n"
+            "    Windows       : install MiKTeX from https://miktex.org"
+        )
+
     # Schedule periodic job directory cleanup every 6 hours
     async def _periodic_cleanup():
         while True:

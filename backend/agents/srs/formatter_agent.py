@@ -153,7 +153,17 @@ class SRSFormatterAgent(BaseAgent):
                 else:
                     logger.warning(f"pdflatex attempt {attempt} failed for SRS")
             except FileNotFoundError:
-                return None, 'pdflatex not installed'
+                logger.warning(
+                    "pdflatex binary not found — install the system package, not the pip wrapper.\n"
+                    "    Ubuntu/Debian : sudo apt-get install texlive-latex-base\n"
+                    "    macOS         : brew install basictex\n"
+                    "    Windows       : install MiKTeX from https://miktex.org"
+                )
+                return None, (
+                    'pdflatex binary not found. '
+                    'Install the system package (e.g. texlive-latex-base) — '
+                    "'pip install pdflatex' only provides a Python wrapper and does not supply the binary."
+                )
             except subprocess.TimeoutExpired:
                 errors = 'pdflatex timed out'
             except Exception as e:
