@@ -51,13 +51,15 @@ def inline_markdown_to_latex(text: str) -> str:
     text = re.sub(r'\*\*([^*]+)\*\*', _save_bold, text)
     text = re.sub(r'__([^_]+)__', _save_bold, text)
 
-    # 3. Italic: *text* or _text_  (after bold so ** doesn't match here)
+    # 3. Italic: *text* (after bold so ** doesn't match here)
+    #    For underscore-italic we only match _word_ with no surrounding underscores.
     def _save_italic(m: re.Match) -> str:
         inner = m.group(1)
         return _save(r'\textit{' + latex_escape(inner) + r'}')
 
     text = re.sub(r'\*([^*]+)\*', _save_italic, text)
-    text = re.sub(r'(?<![_\\])_([^_]+)_(?![_\\])', _save_italic, text)
+    # Match _word_ only when surrounded by word boundaries or spaces
+    text = re.sub(r'(?<!\w)_([^_\s][^_]*)_(?!\w)', _save_italic, text)
 
     # 4. Escape remaining plain text
     text = latex_escape(text)
@@ -218,7 +220,11 @@ def add_markdown_table_to_docx(
     """Add a markdown table as a Word table to the document."""
     from docx.shared import Pt
 
-    col_count = max(len(headers), max((len(r) for r in rows), default=0))
+    if not headers:
+        return
+    col_count = len(headers)
+    if rows:
+        col_count = max(col_count, max(len(r) for r in rows))
     if col_count == 0:
         return
 

@@ -58,6 +58,8 @@ function App() {
   const [requestedModes, setRequestedModes] = useState<string[]>([])
   // Per-mode status messages for separate panel display
   const [modeStatusMessages, setModeStatusMessages] = useState<Record<string, string>>({})
+  // True while waiting for the codebase-summarisation API call to return
+  const [isSummarizing, setIsSummarizing] = useState(false)
   // Track completion of each flow independently
   const githubDocsCompletedRef = useRef(false)
   const multiModeCompletedRef = useRef(false)
@@ -184,13 +186,6 @@ function App() {
         const statusMsg = `[${msg.mode}] Complete ✓`
         setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: statusMsg }))
         setStatusMessage(statusMsg)
-        // Update overall progress based on how many modes have completed
-        setAgents(prev => {
-          const total = prev.length
-          const done = prev.filter(a => a.status === 'completed').length
-          if (total > 0) setOverallProgress(Math.round((done / total) * 100))
-          return prev
-        })
         break
       }
 
@@ -247,9 +242,11 @@ function App() {
     // Show summarizing status while the backend clones and analyses the repo
     const summarizingMsg = '🔍 Summarizing codebase...'
     setStatusMessage(summarizingMsg)
+    setIsSummarizing(true)
     modes.forEach(m => setModeStatusMessages(prev => ({ ...prev, [m]: summarizingMsg })))
 
     const response = await apiClient.generate({ repo_url: repoUrl, modes })
+    setIsSummarizing(false)
     const jobId = response.job_id
 
     const websocket = apiClient.connectWebSocket(
@@ -405,6 +402,7 @@ function App() {
           statusMessage={statusMessage}
           modes={requestedModes}
           modeStatusMessages={modeStatusMessages}
+          isSummarizing={isSummarizing}
         />
       )}
 
