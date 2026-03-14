@@ -115,7 +115,12 @@ class SoftwareDocHeadingsAgent(BaseAgent):
         }
 
     def _parse_sections(self, raw: str) -> List[Dict[str, str]]:
-        """Parse SECTION_N / BRIEF pairs from LLM output."""
+        """Parse SECTION_N / BRIEF pairs from LLM output.
+
+        After parsing whatever the LLM returned, any MANDATORY_HEADINGS that
+        are absent are inserted in their canonical order so the document always
+        contains every required section.
+        """
         sections: List[Dict[str, str]] = []
         lines = raw.strip().splitlines()
         current_name = None
@@ -142,7 +147,23 @@ class SoftwareDocHeadingsAgent(BaseAgent):
                 'brief': ' '.join(current_brief_lines).strip(),
             })
 
-        if not sections:
-            sections = [{'name': h, 'brief': f'Write the {h} section.'} for h in MANDATORY_HEADINGS]
+        # Build a lookup of what was parsed, keyed by lowercase name.
+        parsed_by_name: Dict[str, Dict[str, str]] = {
+            s['name'].lower(): s for s in sections
+        }
 
-        return sections
+        # Reconstruct in mandatory order, filling in any gaps.
+        mandatory_lower = {h.lower() for h in MANDATORY_HEADINGS}
+        ordered: List[Dict[str, str]] = []
+        for heading in MANDATORY_HEADINGS:
+            if heading.lower() in parsed_by_name:
+                ordered.append(parsed_by_name[heading.lower()])
+            else:
+                ordered.append({'name': heading, 'brief': f'Write the {heading} section.'})
+
+        # Append any optional sections the LLM added that aren't mandatory.
+        for sec in sections:
+            if sec['name'].lower() not in mandatory_lower:
+                ordered.append(sec)
+
+        return ordered
