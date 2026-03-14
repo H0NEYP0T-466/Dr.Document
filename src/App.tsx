@@ -58,6 +58,8 @@ function App() {
   const [requestedModes, setRequestedModes] = useState<string[]>([])
   // Per-mode status messages for separate panel display
   const [modeStatusMessages, setModeStatusMessages] = useState<Record<string, string>>({})
+  // True while waiting for the codebase-summarisation API call to return
+  const [isSummarizing, setIsSummarizing] = useState(false)
   // Track completion of each flow independently
   const githubDocsCompletedRef = useRef(false)
   const multiModeCompletedRef = useRef(false)
@@ -125,7 +127,12 @@ function App() {
           ? `[${msg.mode}] ${msg.agent}: ${msg.section}`
           : `[${msg.mode}] ${msg.agent}`
         setAgents(prev => {
-          if (prev.some(a => a.id === agentKey)) return prev
+          // If agent already exists (e.g. restarted by manager), reset it to working
+          if (prev.some(a => a.id === agentKey)) {
+            return prev.map(a =>
+              a.id === agentKey ? { ...a, status: 'working', progress: 0 } : a
+            )
+          }
           const newAgent: Agent = {
             id: agentKey,
             name: label,
@@ -157,6 +164,13 @@ function App() {
           const statusMsg = `[${msg.mode}] Section "${msg.section}" restarting (${msg.restart_count}/3)`
           setModeStatusMessages(prev => ({ ...prev, [msg.mode!]: statusMsg }))
           setStatusMessage(statusMsg)
+          // Reset the section agent back to pending when a restart is triggered
+          const agentKey = `${msg.mode}__section_writer__${msg.section ?? ''}`
+          setAgents(prev =>
+            prev.map(a =>
+              a.id === agentKey ? { ...a, status: 'idle', progress: 0 } : a
+            )
+          )
         }
         break
       }
@@ -177,6 +191,7 @@ function App() {
 
       case 'job_completed':
         setStatusMessage('All modes complete!')
+        setOverallProgress(100)
         break
 
       default:
@@ -224,7 +239,14 @@ function App() {
    * Returns a websocket so it can be stored separately.
    */
   const handleMultiModeFlow = async (repoUrl: string, modes: string[], onAllDone: () => void) => {
+    // Show summarizing status while the backend clones and analyses the repo
+    const summarizingMsg = '🔍 Summarizing codebase...'
+    setStatusMessage(summarizingMsg)
+    setIsSummarizing(true)
+    modes.forEach(m => setModeStatusMessages(prev => ({ ...prev, [m]: summarizingMsg })))
+
     const response = await apiClient.generate({ repo_url: repoUrl, modes })
+    setIsSummarizing(false)
     const jobId = response.job_id
 
     const websocket = apiClient.connectWebSocket(
@@ -380,6 +402,7 @@ function App() {
           statusMessage={statusMessage}
           modes={requestedModes}
           modeStatusMessages={modeStatusMessages}
+          isSummarizing={isSummarizing}
         />
       )}
 

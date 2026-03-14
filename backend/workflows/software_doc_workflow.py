@@ -193,7 +193,9 @@ class SoftwareDocWorkflow:
                 'word_count': result['word_count'],
             })
 
-        await asyncio.gather(*[write_section(s) for s in section_states])
+        # Sequential section writing to avoid parallel LLM saturation
+        for state in section_states:
+            await write_section(state)
 
         # Sanitize section content to remove any meta chatter that leaked through
         for state in section_states:
@@ -230,11 +232,9 @@ class SoftwareDocWorkflow:
                     state['manager_feedback'] = review['feedback']
 
             to_restart = [s for s in section_states if not s['approved']]
-            if to_restart:
-                await asyncio.gather(*[write_section(s) for s in to_restart])
-                # Sanitize restarted sections
-                for state in to_restart:
-                    state['content'] = sanitize_content(state['content'])
+            for state in to_restart:
+                await write_section(state)
+                state['content'] = sanitize_content(state['content'])
 
         for state in section_states:
             if not state['approved']:

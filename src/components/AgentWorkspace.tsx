@@ -15,6 +15,7 @@ interface AgentWorkspaceProps {
   statusMessage: string;
   modes?: string[];
   modeStatusMessages?: Record<string, string>;
+  isSummarizing?: boolean;
 }
 
 interface ModePanelProps {
@@ -22,9 +23,10 @@ interface ModePanelProps {
   modeLabel: string;
   agents: Agent[];
   statusMessage: string;
+  isSummarizing?: boolean;
 }
 
-const ModePanel: React.FC<ModePanelProps> = ({ modeId, modeLabel, agents, statusMessage }) => {
+const ModePanel: React.FC<ModePanelProps> = ({ modeId, modeLabel, agents, statusMessage, isSummarizing }) => {
   const workingCount = agents.filter(a => a.status === 'working').length;
   const completedCount = agents.filter(a => a.status === 'completed').length;
   const totalCount = agents.length;
@@ -52,7 +54,11 @@ const ModePanel: React.FC<ModePanelProps> = ({ modeId, modeLabel, agents, status
       )}
       <div className="mode-panel__agents">
         {agents.length === 0 ? (
-          <div className="mode-panel__empty">⏳ Waiting for agents to start…</div>
+          <div className="mode-panel__empty">
+            {isSummarizing
+              ? '🔍 Summarizing codebase…'
+              : '⏳ Waiting for agents to start…'}
+          </div>
         ) : (
           agents.map(agent => (
             <AgentCard key={agent.id} agent={agent} />
@@ -69,6 +75,7 @@ const AgentWorkspace: React.FC<AgentWorkspaceProps> = ({
   statusMessage,
   modes = [],
   modeStatusMessages = {},
+  isSummarizing = false,
 }) => {
   // For github_docs, use agents that have no mode tag (the shared legacy agents)
   const githubDocsAgents = agents.filter(a => !a.mode);
@@ -107,6 +114,7 @@ const AgentWorkspace: React.FC<AgentWorkspaceProps> = ({
                 modeLabel={MODE_LABELS[mode] ?? mode}
                 agents={panelAgents}
                 statusMessage={modeStatusMessages[mode] ?? ''}
+                isSummarizing={isSummarizing}
               />
             );
           })}
