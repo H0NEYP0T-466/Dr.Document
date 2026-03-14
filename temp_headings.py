@@ -10,33 +10,32 @@ MANDATORY_HEADINGS: List[str] = [
     "Title Page",
     "Table of Contents",
     "Introduction",
-    "1.1 Purpose", 
+    "1.1 Purpose",
     "1.2 Scope",
     "1.3 Definitions, Acronyms, and Abbreviations",
+    "1.4 References",
+    "1.5 Overview",
     "Overall Description",
     "2.1 Product Perspective",
     "2.2 Product Functions",
-    "2.3 User Classes and Characteristics", 
+    "2.3 User Classes and Characteristics",
     "2.4 Operating Environment",
     "2.5 Design and Implementation Constraints",
     "2.6 Assumptions and Dependencies",
     "System Features",
-    # System features subsections will be inserted here dynamically
-    # CORRECT IEEE 830 STRUCTURE - REFERENCES MUST BE AT THE VERY END
-    "References",  # NOT "1.4 References" - this goes at the end!
     "External Interface Requirements",
     "4.1 User Interfaces",
-    "4.2 Hardware Interfaces", 
+    "4.2 Hardware Interfaces",
     "4.3 Software Interfaces",
     "4.4 Communication Interfaces",
     "Non-Functional Requirements",
     "5.1 Performance Requirements",
     "5.2 Safety Requirements",
     "5.3 Security Requirements",
-    "5.4 Software Quality Attributes", 
+    "5.4 Software Quality Attributes",
     "Other Requirements",
     "Appendix A: Glossary",
-    "Appendix B: Analysis Models"
+    "Appendix B: Analysis Models",
 ]
 
 
@@ -149,22 +148,3 @@ class SRSHeadingsAgent(BaseAgent):
                     current_brief_lines.append(stripped)
 
         if current_name:
-            sections.append({
-                'name': current_name,
-                'brief': ' '.join(current_brief_lines).strip(),
-            })
-
-        if not sections:
-            sections = [{'name': h, 'brief': f'Write the {h} section per IEEE 830.'}
-                        for h in MANDATORY_HEADINGS]
-
-        return sections
-
-    def _parse_features(self, raw: str) -> List[str]:
-        """Extract detected features list."""
-        for line in raw.strip().splitlines():
-            stripped = line.strip()
-            if stripped.upper().startswith('DETECTED_FEATURES:'):
-                val = stripped.split(':', 1)[1].strip()
-                return [f.strip() for f in val.split(',') if f.strip()]
-        return []
