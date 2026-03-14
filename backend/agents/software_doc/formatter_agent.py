@@ -5,6 +5,11 @@ import tempfile
 from datetime import date
 from typing import Dict, Any, List
 from backend.agents.base_agent import BaseAgent
+from backend.agents.markdown_utils import (
+    latex_escape,
+    markdown_to_latex,
+    render_markdown_to_docx,
+)
 from backend.config import settings
 from backend.logger import logger
 
@@ -72,26 +77,6 @@ class SoftwareDocFormatterAgent(BaseAgent):
             'latex_errors': latex_errors,
         }
 
-    def _latex_escape(self, text: str) -> str:
-        """Escape special LaTeX characters."""
-        # Use a placeholder so that { and } introduced by later replacements
-        # are not themselves re-escaped.
-        _BS = '\x00BS\x00'
-        text = text.replace('\\', _BS)
-        text = text.replace('{', r'\{')
-        text = text.replace('}', r'\}')
-        text = text.replace(_BS, r'\textbackslash{}')
-        text = text.replace('&', r'\&')
-        text = text.replace('%', r'\%')
-        text = text.replace('$', r'\$')
-        text = text.replace('#', r'\#')
-        text = text.replace('_', r'\_')          # fixes "! Missing $ inserted."
-        text = text.replace('^', r'\textasciicircum{}')
-        text = text.replace('~', r'\textasciitilde{}')
-        text = text.replace('<', r'\textless{}')
-        text = text.replace('>', r'\textgreater{}')
-        return text
-
     def _generate_latex(
         self,
         sections: List[Dict],
@@ -99,8 +84,8 @@ class SoftwareDocFormatterAgent(BaseAgent):
         repo_name: str,
         repo_url: str,
     ) -> str:
-        """Generate a LaTeX document using the report class."""
-        safe_title = self._latex_escape(title)
+        """Generate a LaTeX document using the report class with markdown rendering."""
+        safe_title = latex_escape(title)
         author = repo_name.split('/')[0] if '/' in repo_name else repo_name
 
         body_parts = []
@@ -108,8 +93,9 @@ class SoftwareDocFormatterAgent(BaseAgent):
             if sec['name'].lower() in ('title page', 'table of contents',
                                         'list of figures', 'list of abbreviations'):
                 continue  # handled by LaTeX commands
-            sec_title = self._latex_escape(sec['name'])
-            sec_body = self._latex_escape(sec['content'])
+            sec_title = latex_escape(sec['name'])
+            # Convert markdown; ## inside a chapter becomes a \section
+            sec_body = markdown_to_latex(sec['content'], subsection_cmd='section')
             if sec['name'].lower().startswith('appendix'):
                 body_parts.append(f'\\appendix\n\\chapter{{{sec_title}}}\n{sec_body}\n')
             else:
@@ -117,19 +103,24 @@ class SoftwareDocFormatterAgent(BaseAgent):
 
         body = '\n'.join(body_parts)
 
-        tex = f"""\\documentclass[12pt,a4paper]{{report}}
-\\usepackage{{geometry}}
-\\geometry{{margin=1in}}
-\\usepackage{{hyperref}}
-\\usepackage{{listings}}
-\\usepackage{{booktabs}}
-\\usepackage{{graphicx}}
-\\usepackage{{amsmath}}
-\\usepackage{{setspace}}
-\\onehalfspacing
-
+        tex = r"""\documentclass[12pt,a4paper]{report}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{setspace}
+\onehalfspacing
+""" + f"""
 \\title{{{safe_title}}}
-\\author{{{self._latex_escape(author)}}}
+\\author{{{latex_escape(author)}}}
 \\date{{\\today}}
 
 \\begin{{document}}
@@ -280,13 +271,7 @@ The content is derived solely from the codebase and does not represent any offic
                 if sec['name'].lower() in skip_sections:
                     continue
                 doc.add_heading(sec['name'], level=1)
-                for paragraph in sec['content'].split('\n\n'):
-                    cleaned = ' '.join(paragraph.split('\n')).strip()
-                    if cleaned:
-                        p = doc.add_paragraph()
-                        run = p.add_run(cleaned)
-                        run.font.name = 'Times New Roman'
-                        run.font.size = Pt(12)
+                render_markdown_to_docx(doc, sec['content'])
 
             doc.save(docx_path)
             logger.success("Software doc DOCX generated")

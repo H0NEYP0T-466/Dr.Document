@@ -6,6 +6,11 @@ import tempfile
 from datetime import date
 from typing import Dict, Any, List
 from backend.agents.base_agent import BaseAgent
+from backend.agents.markdown_utils import (
+    latex_escape,
+    markdown_to_latex,
+    render_markdown_to_docx,
+)
 from backend.config import settings
 from backend.logger import logger
 
@@ -22,92 +27,7 @@ class SRSFormatterAgent(BaseAgent):
 
     def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Format the SRS document with CORRECT IEEE 830 structure.
-        
-        CRITICAL RULES:
-        - References section MUST be at the very END of the document
-        - No sections should come after References
-        - Use proper LaTeX formatting for all sections
-        - Ensure markdown **bold** renders correctly in DOCX
-        """
-        sections = input_data.get('sections', [])
-        selected_title = input_data.get('selected_title', 'Software Requirements Specification')
-        repo_name = input_data.get('repo_name', 'Unknown')
-        repo_url = input_data.get('repo_url', '')
-        job_dir = input_data.get('job_dir', tempfile.gettempdir())
-
-        logger.workflow_step("SRS Formatter", "Assembling SRS document with correct IEEE 830 structure")
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands
-        # 3. Handle markdown **bold** conversion correctly  
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands (\section, \subsection)
-        # 3. Handle markdown **bold** conversion correctly  
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands (\section, \subsection)
-        # 3. Handle markdown **bold** conversion correctly
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        """
         Format the SRS document with correct IEEE 830 structure.
-
-        Args:
-            input_data: {
-                'sections': List[{name, content}],
-                'selected_title': str,
-                'repo_name': str,
-                'repo_url': str,
-                'job_dir': str,
-            }
-
-        Returns:
-            {
-                'tex_path': str,
-                'pdf_path': str | None,
-                'docx_path': str | None,
-                'latex_errors': str,
-            }
-        """
-        sections = input_data.get('sections', [])
-        selected_title = input_data.get('selected_title', 'Software Requirements Specification')
-        repo_name = input_data.get('repo_name', 'Unknown')
-        repo_url = input_data.get('repo_url', '')
-        job_dir = input_data.get('job_dir', tempfile.gettempdir())
-
-        logger.workflow_step("SRS Formatter", "Assembling SRS document with correct IEEE 830 structure")
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands
-        # 3. Handle markdown **bold** conversion correctly  
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands (\section, \subsection)
-        # 3. Handle markdown **bold** conversion correctly  
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        
-        # CRITICAL LATEX COMPILATION FIXES
-        # 1. Ensure all special characters are properly escaped
-        # 2. Use proper LaTeX section commands (\section, \subsection)
-        # 3. Handle markdown **bold** conversion correctly
-        # 4. Validate References section is at the END
-        # 5. Escape any problematic characters that break LaTeX
-        """
-        Format the SRS document.
 
         Args:
             input_data: {
@@ -157,49 +77,35 @@ class SRSFormatterAgent(BaseAgent):
             'latex_errors': latex_errors,
         }
 
-    def _latex_escape(self, text: str) -> str:
-        """Escape special LaTeX characters."""
-        replacements = [
-            ('\\', r'\textbackslash{}'),
-            ('&', r'\&'),
-            ('%', r'\%'),
-            ('$', r'\$'),
-            ('#', r'\#'),
-            ('^', r'\textasciicircum{}'),
-            ('~', r'\textasciitilde{}'),
-        ]
-        for old, new in replacements:
-            text = text.replace(old, new)
-        return text
-
     def _generate_latex(self, sections: List[Dict], title: str, repo_name: str) -> str:
-        """Generate IEEE-style article LaTeX for SRS."""
-        safe_title = self._latex_escape(title)
+        """Generate IEEE-style article LaTeX for SRS with markdown rendering."""
+        safe_title = latex_escape(title)
         author = repo_name.split('/')[0] if '/' in repo_name else repo_name
 
         body_parts = []
         for sec in sections:
             if sec['name'].lower() in ('title page', 'table of contents'):
                 continue
-            sec_title = self._latex_escape(sec['name'])
-            # Bold FR/NFR IDs in content
-            content = sec['content']
-            sec_body = self._latex_escape(content)
+            sec_title = latex_escape(sec['name'])
+            sec_body = markdown_to_latex(sec['content'], subsection_cmd='subsection')
             body_parts.append(f'\\section{{{sec_title}}}\n{sec_body}\n')
 
         body = '\n'.join(body_parts)
 
-        tex = f"""\\documentclass[12pt,a4paper]{{article}}
-\\usepackage{{geometry}}
-\\geometry{{margin=1in}}
-\\usepackage{{hyperref}}
-\\usepackage{{booktabs}}
-\\usepackage{{array}}
-\\usepackage{{longtable}}
-\\usepackage{{enumitem}}
-
+        tex = r"""\documentclass[12pt,a4paper]{article}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{verbatim}
+""" + f"""
 \\title{{{safe_title}}}
-\\author{{{self._latex_escape(author)}}}
+\\author{{{latex_escape(author)}}}
 \\date{{\\today}}
 
 \\begin{{document}}
@@ -217,26 +123,36 @@ class SRSFormatterAgent(BaseAgent):
         return tex
 
     def _compile_pdf(self, tex_path: str, job_dir: str) -> tuple:
-        """Compile PDF with pdflatex."""
+        """Compile PDF with pdflatex (up to 3 attempts)."""
         pdf_path = tex_path.replace('.tex', '.pdf')
         errors = ''
 
         for attempt in range(1, 4):
             try:
                 result = subprocess.run(
-                    ['pdflatex', '-interaction=nonstopmode', '-output-directory', job_dir, tex_path],
+                    ['pdflatex', '-interaction=nonstopmode', '-output-directory', job_dir,
+                     tex_path],
                     capture_output=True, text=True, timeout=120,
                 )
                 errors = result.stdout + result.stderr
                 if result.returncode == 0 and os.path.exists(pdf_path):
                     logger.success(f"SRS PDF compiled on attempt {attempt}")
+                    # Second pass for correct TOC page numbers
                     subprocess.run(
-                        ['pdflatex', '-interaction=nonstopmode', '-output-directory', job_dir, tex_path],
+                        ['pdflatex', '-interaction=nonstopmode', '-output-directory', job_dir,
+                         tex_path],
                         capture_output=True, text=True, timeout=120,
                     )
                     return pdf_path, ''
                 else:
-                    logger.warning(f"pdflatex attempt {attempt} failed for SRS")
+                    relevant = '\n'.join(
+                        line for line in errors.splitlines()
+                        if line.startswith('!') or 'Error' in line or 'error' in line
+                    )
+                    logger.warning(
+                        f"pdflatex attempt {attempt} failed for SRS"
+                        + (f':\n{relevant}' if relevant else f'\n{errors[-800:]}')
+                    )
             except FileNotFoundError:
                 logger.warning(
                     "pdflatex binary not found — install the system package, not the pip wrapper.\n"
@@ -263,7 +179,7 @@ class SRSFormatterAgent(BaseAgent):
         repo_name: str,
         job_dir: str,
     ) -> str | None:
-        """Generate SRS DOCX with revision history table using python-docx."""
+        """Generate SRS DOCX with revision history table and markdown rendering."""
         try:
             from docx import Document
             from docx.shared import Pt
@@ -280,7 +196,7 @@ class SRSFormatterAgent(BaseAgent):
 
             doc = Document()
 
-            # Set default font
+            # Default font
             style = doc.styles['Normal']
             style.font.name = 'Times New Roman'
             style.font.size = Pt(12)
@@ -353,13 +269,7 @@ class SRSFormatterAgent(BaseAgent):
                 )
                 level = 2 if is_subsection else 1
                 doc.add_heading(sec['name'], level=level)
-                for paragraph in sec['content'].split('\n\n'):
-                    cleaned = ' '.join(paragraph.split('\n')).strip()
-                    if cleaned:
-                        p = doc.add_paragraph()
-                        run = p.add_run(cleaned)
-                        run.font.name = 'Times New Roman'
-                        run.font.size = Pt(12)
+                render_markdown_to_docx(doc, sec['content'])
 
             doc.save(docx_path)
             logger.success("SRS DOCX generated")

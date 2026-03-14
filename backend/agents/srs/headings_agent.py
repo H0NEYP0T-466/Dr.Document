@@ -6,37 +6,37 @@ from backend.logger import logger
 
 
 # IEEE 830 mandatory structure (strict order)
+# References MUST be at the very end — after appendices.
 MANDATORY_HEADINGS: List[str] = [
     "Title Page",
     "Table of Contents",
     "Introduction",
-    "1.1 Purpose", 
+    "1.1 Purpose",
     "1.2 Scope",
     "1.3 Definitions, Acronyms, and Abbreviations",
     "Overall Description",
     "2.1 Product Perspective",
     "2.2 Product Functions",
-    "2.3 User Classes and Characteristics", 
+    "2.3 User Classes and Characteristics",
     "2.4 Operating Environment",
     "2.5 Design and Implementation Constraints",
     "2.6 Assumptions and Dependencies",
     "System Features",
     # System features subsections will be inserted here dynamically
-    # CORRECT IEEE 830 STRUCTURE - REFERENCES MUST BE AT THE VERY END
-    "References",  # NOT "1.4 References" - this goes at the end!
     "External Interface Requirements",
     "4.1 User Interfaces",
-    "4.2 Hardware Interfaces", 
+    "4.2 Hardware Interfaces",
     "4.3 Software Interfaces",
     "4.4 Communication Interfaces",
     "Non-Functional Requirements",
     "5.1 Performance Requirements",
     "5.2 Safety Requirements",
     "5.3 Security Requirements",
-    "5.4 Software Quality Attributes", 
+    "5.4 Software Quality Attributes",
     "Other Requirements",
     "Appendix A: Glossary",
-    "Appendix B: Analysis Models"
+    "Appendix B: Analysis Models",
+    "References",  # Always last — per IEEE 830
 ]
 
 

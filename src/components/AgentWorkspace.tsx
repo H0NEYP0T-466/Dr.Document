@@ -52,7 +52,11 @@ const ModePanel: React.FC<ModePanelProps> = ({ modeId, modeLabel, agents, status
       )}
       <div className="mode-panel__agents">
         {agents.length === 0 ? (
-          <div className="mode-panel__empty">⏳ Waiting for agents to start…</div>
+          <div className="mode-panel__empty">
+            {statusMessage && statusMessage.includes('Summarizing')
+              ? '🔍 Summarizing codebase…'
+              : '⏳ Waiting for agents to start…'}
+          </div>
         ) : (
           agents.map(agent => (
             <AgentCard key={agent.id} agent={agent} />
