@@ -106,6 +106,7 @@ class SoftwareDocFormatterAgent(BaseAgent):
         tex = r"""\documentclass[12pt,a4paper]{report}
 \usepackage{geometry}
 \geometry{margin=1in}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{hyperref}
@@ -116,6 +117,7 @@ class SoftwareDocFormatterAgent(BaseAgent):
 \usepackage{verbatim}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{setspace}
 \onehalfspacing
 """ + f"""

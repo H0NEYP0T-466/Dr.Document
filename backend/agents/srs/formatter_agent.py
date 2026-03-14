@@ -95,8 +95,11 @@ class SRSFormatterAgent(BaseAgent):
         tex = r"""\documentclass[12pt,a4paper]{article}
 \usepackage{geometry}
 \geometry{margin=1in}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{array}

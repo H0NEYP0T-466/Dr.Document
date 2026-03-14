@@ -7,8 +7,119 @@ from typing import List, Any
 # LaTeX helpers
 # ---------------------------------------------------------------------------
 
+_UNICODE_TO_LATEX = {
+    # Comparison operators
+    '≤': r'$\leq$',
+    '≥': r'$\geq$',
+    '≠': r'$\neq$',
+    '≈': r'$\approx$',
+    '≡': r'$\equiv$',
+    # Arrows
+    '→': r'$\rightarrow$',
+    '←': r'$\leftarrow$',
+    '↔': r'$\leftrightarrow$',
+    '⇒': r'$\Rightarrow$',
+    '⇐': r'$\Leftarrow$',
+    '⇔': r'$\Leftrightarrow$',
+    '↑': r'$\uparrow$',
+    '↓': r'$\downarrow$',
+    # Arithmetic / general math
+    '×': r'$\times$',
+    '÷': r'$\div$',
+    '±': r'$\pm$',
+    '∓': r'$\mp$',
+    '∞': r'$\infty$',
+    '√': r'$\surd$',
+    # Set operations
+    '∈': r'$\in$',
+    '∉': r'$\notin$',
+    '⊂': r'$\subset$',
+    '⊃': r'$\supset$',
+    '⊆': r'$\subseteq$',
+    '⊇': r'$\supseteq$',
+    '∩': r'$\cap$',
+    '∪': r'$\cup$',
+    '∅': r'$\emptyset$',
+    # Logic
+    '∀': r'$\forall$',
+    '∃': r'$\exists$',
+    '¬': r'$\neg$',
+    '∧': r'$\wedge$',
+    '∨': r'$\vee$',
+    # Calculus / analysis
+    '∑': r'$\sum$',
+    '∏': r'$\prod$',
+    '∫': r'$\int$',
+    '∂': r'$\partial$',
+    '∇': r'$\nabla$',
+    # Greek letters (lowercase)
+    'α': r'$\alpha$',
+    'β': r'$\beta$',
+    'γ': r'$\gamma$',
+    'δ': r'$\delta$',
+    'ε': r'$\epsilon$',
+    'ζ': r'$\zeta$',
+    'η': r'$\eta$',
+    'θ': r'$\theta$',
+    'ι': r'$\iota$',
+    'κ': r'$\kappa$',
+    'λ': r'$\lambda$',
+    'μ': r'$\mu$',
+    'ν': r'$\nu$',
+    'ξ': r'$\xi$',
+    'π': r'$\pi$',
+    'ρ': r'$\rho$',
+    'σ': r'$\sigma$',
+    'τ': r'$\tau$',
+    'υ': r'$\upsilon$',
+    'φ': r'$\phi$',
+    'χ': r'$\chi$',
+    'ψ': r'$\psi$',
+    'ω': r'$\omega$',
+    # Greek letters (uppercase with LaTeX commands)
+    'Γ': r'$\Gamma$',
+    'Δ': r'$\Delta$',
+    'Θ': r'$\Theta$',
+    'Λ': r'$\Lambda$',
+    'Ξ': r'$\Xi$',
+    'Π': r'$\Pi$',
+    'Σ': r'$\Sigma$',
+    'Υ': r'$\Upsilon$',
+    'Φ': r'$\Phi$',
+    'Ψ': r'$\Psi$',
+    'Ω': r'$\Omega$',
+    # Typography / punctuation
+    '\u2013': '--',    # en dash
+    '\u2014': '---',   # em dash
+    '\u2018': '`',     # left single quotation mark
+    '\u2019': "'",     # right single quotation mark / apostrophe
+    '\u201c': '``',    # left double quotation mark
+    '\u201d': "''",    # right double quotation mark
+    '…': r'\ldots{}',
+    '•': r'\textbullet{}',
+    # Other common symbols
+    '°': r'$^\circ$',
+    '²': r'$^2$',
+    '³': r'$^3$',
+    '½': r'$\frac{1}{2}$',
+    '¼': r'$\frac{1}{4}$',
+    '¾': r'$\frac{3}{4}$',
+    '™': r'\texttrademark{}',
+    '®': r'\textregistered{}',
+    '©': r'\textcopyright{}',
+    '✓': r'$\checkmark$',
+    '✗': r'$\times$',
+    '✕': r'$\times$',
+}
+
+
 def latex_escape(text: str) -> str:
-    """Escape special LaTeX characters (plain text only)."""
+    """Escape special LaTeX characters (plain text only).
+
+    Handles both ASCII special characters and common Unicode symbols that
+    pdflatex cannot process directly (e.g. mathematical operators, Greek
+    letters, typographic punctuation).
+    """
     _BS = '\x00BS\x00'
     text = text.replace('\\', _BS)
     text = text.replace('{', r'\{')
@@ -23,6 +134,12 @@ def latex_escape(text: str) -> str:
     text = text.replace('~', r'\textasciitilde{}')
     text = text.replace('<', r'\textless{}')
     text = text.replace('>', r'\textgreater{}')
+    # Replace Unicode characters with their LaTeX equivalents.
+    # This step runs after ASCII escaping so the introduced LaTeX
+    # commands (containing \, {, }) are never double-escaped.
+    for char, replacement in _UNICODE_TO_LATEX.items():
+        if char in text:
+            text = text.replace(char, replacement)
     return text
 
 
