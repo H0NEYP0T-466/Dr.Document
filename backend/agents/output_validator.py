@@ -131,4 +131,8 @@ def sanitize_content(text: str) -> str:
     # Collapse more than two consecutive blank lines
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
 
+    # Strip null bytes and other control characters that are invalid in LaTeX
+    # (keep only newline \x0a, carriage return \x0d, and tab \x09)
+    cleaned = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", cleaned)
+
     return cleaned.strip()

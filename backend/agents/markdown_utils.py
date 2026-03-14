@@ -145,6 +145,9 @@ def latex_escape(text: str) -> str:
 
 def inline_markdown_to_latex(text: str) -> str:
     """Apply inline markdown → LaTeX: bold, italic, inline code, then escape."""
+    # Strip null bytes and control chars before creating placeholders so they
+    # never end up in the output .tex file.
+    text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
     # We use placeholders to protect markdown spans from LaTeX escaping.
     saved: List[str] = []
 
@@ -184,6 +187,13 @@ def inline_markdown_to_latex(text: str) -> str:
     # 5. Restore all saved spans
     for idx, snippet in enumerate(saved):
         text = text.replace(f'\x00SPAN{idx}\x00', snippet)
+
+    # Safety net: remove any null bytes left by placeholders that were not
+    # restored (should not happen in normal operation, but prevents invalid
+    # characters from reaching the .tex file).
+    if '\x00' in text:
+        text = re.sub(r'\x00[^\x00]*\x00', '', text)
+        text = text.replace('\x00', '')
 
     return text
 
@@ -226,6 +236,10 @@ def markdown_to_latex(text: str, subsection_cmd: str = 'subsection') -> str:
         subsection_cmd: LaTeX command to use for ## headings
                         ('subsection' for article, 'section' for report chapters).
     """
+    # Strip null bytes and other control characters that are invalid in LaTeX
+    # before splitting into lines so they never reach the .tex file.
+    # Newline (\x0a), carriage return (\x0d) and tab (\x09) are preserved.
+    text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
     lines = text.split('\n')
     output: List[str] = []
     i = 0

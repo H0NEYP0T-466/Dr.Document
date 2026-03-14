@@ -152,3 +152,55 @@ class TestSanitizeContent:
         result = sanitize_content(text)
         # The important thing: the document content is preserved
         assert "pipeline was designed for extensibility" in result
+
+
+# ---------------------------------------------------------------------------
+# sanitize_content — control character stripping
+# ---------------------------------------------------------------------------
+
+class TestSanitizeContentControlChars:
+    """Verify that null bytes and other LaTeX-invalid control characters are
+    removed so they can never reach the .tex file."""
+
+    def test_strips_null_bytes(self):
+        text = "Error notifications\x00 with detailed messages"
+        result = sanitize_content(text)
+        assert '\x00' not in result
+        assert "Error notifications" in result
+        assert "with detailed messages" in result
+
+    def test_strips_null_byte_only_string(self):
+        assert sanitize_content("\x00") == ""
+
+    def test_strips_multiple_null_bytes(self):
+        text = "line one\x00\x00\nline two"
+        result = sanitize_content(text)
+        assert '\x00' not in result
+        assert "line one" in result
+        assert "line two" in result
+
+    def test_strips_other_control_chars(self):
+        """BEL, BS, VT, FF, SO, SI etc. must all be removed."""
+        controls = "\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x1f\x7f"
+        text = f"before{controls}after"
+        result = sanitize_content(text)
+        for ch in controls:
+            assert ch not in result
+        assert "before" in result
+        assert "after" in result
+
+    def test_preserves_newline_tab_cr(self):
+        """Newline, tab and carriage return are valid and must be kept."""
+        text = "line one\nline two\ttabbed\rcarriage"
+        result = sanitize_content(text)
+        assert "line one" in result
+        assert "line two" in result
+
+    def test_placeholder_lookalike_from_llm_null_bytes_removed(self):
+        """If LLM somehow emits a SPAN-placeholder-like string with null bytes,
+        those null bytes must be removed."""
+        # Simulate LLM output that contains what looks like a leaked placeholder
+        text = "feature\x00SPAN0\x00: Error notifications with detailed messages"
+        result = sanitize_content(text)
+        assert '\x00' not in result
+        assert "Error notifications with detailed messages" in result

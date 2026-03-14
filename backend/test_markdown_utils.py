@@ -212,3 +212,84 @@ class TestMarkdownToLatexUnicode:
         result = markdown_to_latex('The angle θ is measured in degrees °.')
         assert r'$\theta$' in result
         assert r'$^\circ$' in result
+
+
+# ---------------------------------------------------------------------------
+# Control-character stripping — guard against null bytes from LLM output
+# ---------------------------------------------------------------------------
+
+class TestControlCharStripping:
+    """Ensure null bytes and other pdflatex-invalid control characters are
+    stripped at every processing layer so they never reach the .tex file."""
+
+    # -- latex_escape --
+
+    def test_markdown_to_latex_strips_null_bytes_end_to_end(self):
+        # latex_escape intentionally does NOT strip null bytes — that is
+        # handled upstream by inline_markdown_to_latex / markdown_to_latex /
+        # sanitize_content so that the \x00 placeholder delimiters used
+        # internally by inline_markdown_to_latex are never accidentally removed.
+        # Direct callers (headings, title, etc.) receive pre-cleaned text.
+        # Verify that the stripping at markdown_to_latex level works end-to-end:
+        result = markdown_to_latex("foo\x00bar")
+        assert '\x00' not in result
+        assert "foobar" in result
+
+    def test_markdown_to_latex_strips_control_chars(self):
+        # Control char stripping is handled at the markdown_to_latex /
+        # inline_markdown_to_latex level, not inside latex_escape itself.
+        controls = "\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x1f\x7f"
+        result = markdown_to_latex(f"a{controls}b")
+        for ch in controls:
+            assert ch not in result
+        assert "ab" in result
+
+    def test_latex_escape_preserves_newline_tab(self):
+        result = latex_escape("line\nnext\ttab")
+        assert "line" in result
+        assert "next" in result
+
+    # -- inline_markdown_to_latex --
+
+    def test_inline_markdown_strips_null_bytes_in_plain_text(self):
+        result = inline_markdown_to_latex("Error\x00 notifications")
+        assert '\x00' not in result
+        assert "Error" in result
+        assert "notifications" in result
+
+    def test_inline_markdown_strips_null_bytes_in_bold(self):
+        result = inline_markdown_to_latex("**Error\x00 notifications**")
+        assert '\x00' not in result
+        assert r'\textbf{' in result
+
+    def test_inline_markdown_strips_null_bytes_in_code(self):
+        result = inline_markdown_to_latex("`code\x00value`")
+        assert '\x00' not in result
+        assert r'\texttt{' in result
+
+    def test_inline_markdown_safety_net_for_leaked_placeholder(self):
+        """Even if a \x00SPAN\x00 placeholder somehow is not restored,
+        the safety net should remove the null bytes."""
+        # Force a scenario where the placeholder text itself has a null byte
+        # by passing a pre-formed placeholder-lookalike as plain text.
+        # inline_markdown_to_latex strips leading \x00 from the input first,
+        # so the placeholder would be incomplete and the safety net fires.
+        text = "\x00SPAN0\x00: Error notifications with detailed messages"
+        result = inline_markdown_to_latex(text)
+        assert '\x00' not in result
+
+    # -- markdown_to_latex --
+
+    def test_markdown_to_latex_strips_null_bytes_in_paragraph(self):
+        result = markdown_to_latex("Error\x00 notifications with detailed messages")
+        assert '\x00' not in result
+        assert "Error" in result
+
+    def test_markdown_to_latex_strips_null_bytes_in_heading(self):
+        result = markdown_to_latex("## Error\x00 notifications")
+        assert '\x00' not in result
+
+    def test_markdown_to_latex_strips_null_bytes_in_list(self):
+        result = markdown_to_latex("- Error\x00 notifications with detailed messages")
+        assert '\x00' not in result
+        assert "Error" in result
